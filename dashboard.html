@@ -9,118 +9,109 @@
     
     <style>
         body {
-            background-color: #f4f7f6;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f9;
+            font-family: 'Segoe UI', Roboto, sans-serif;
         }
-        .navbar {
-            background-color: #2e7d32 !important;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        .navbar-custom {
+            background-color: #1b5e20 !important;
+            padding: 15px 20px;
         }
-        .navbar-brand, .nav-link {
-            color: #ffffff !important;
-            font-weight: 500;
-        }
-        .nav-link:hover {
-            color: #c8e6c9 !important;
-        }
-        .card-box {
+        .card-stat {
             border: none;
             border-radius: 12px;
-            transition: transform 0.2s, box-shadow 0.2s;
+            color: white;
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            transition: transform 0.2s;
         }
-        .card-box:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+        .card-stat:hover {
+            transform: translateY(-5px);
         }
-        .stat-icon {
-            font-size: 2.2rem;
-            opacity: 0.8;
-        }
-        .bg-total { background: linear-gradient(135deg, #6c757d, #495057); color: white; }
-        .bg-fresh { background: linear-gradient(135deg, #2e7d32, #1b5e20); color: white; }
-        .bg-expiring { background: linear-gradient(135deg, #f57c00, #e65100); color: white; }
-        .bg-expired { background: linear-gradient(135deg, #c62828, #b71c1c); color: white; }
+        .bg-total { background: linear-gradient(45deg, #4b6584, #778ca3); }
+        .bg-fresh { background: linear-gradient(45deg, #20bf6b, #26de81); }
+        .bg-expiring { background: linear-gradient(45deg, #fa8231, #fed330); }
+        .bg-expired { background: linear-gradient(45deg, #eb3b5a, #fc5c65); }
         
-        .list-group-item {
-            border-radius: 8px !important;
-            margin-bottom: 8px;
-            border: 1px solid #e0e0e0;
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+        .content-card {
+            background: white;
+            border-radius: 12px;
+            border: none;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
         }
     </style>
 </head>
 <body>
 
-    <nav class="navbar navbar-expand-lg navbar-dark mb-4 px-4">
-        <a class="navbar-brand fw-bold" href="{{ url_for('dashboard') }}">
-            <i class="fa-solid fa-leaf me-2"></i>AI Shelf Life
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto align-items-center">
-                <li class="nav-item"><a class="nav-link active me-3" href="{{ url_for('dashboard') }}"><i class="fa-solid fa-chart-line me-1"></i> Dashboard</a></li>
-                <li class="nav-item"><a class="nav-link me-3" href="{{ url_for('add_product') }}"><i class="fa-solid fa-plus me-1"></i> Add Product</a></li>
-                <li class="nav-item"><a class="nav-link me-3" href="{{ url_for('product_list') }}"><i class="fa-solid fa-list me-1"></i> Product List</a></li>
-                <li class="nav-item"><a class="nav-link me-3" href="{{ url_for('ai_prediction') }}"><i class="fa-solid fa-robot me-1"></i> AI Prediction</a></li>
-                <li class="nav-item"><a class="nav-link me-3" href="{{ url_for('notifications') }}"><i class="fa-solid fa-bell me-1"></i> Notifications</a></li>
-                <li class="nav-item"><a class="nav-link me-3" href="{{ url_for('profile') }}"><i class="fa-solid fa-user me-1"></i> Profile</a></li>
-                <li class="nav-item"><a class="btn btn-outline-light btn-sm px-3 ms-2" href="{{ url_for('login') }}"><i class="fa-solid fa-right-from-bracket me-1"></i> Logout</a></li>
-            </ul>
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom mb-4">
+        <div class="container-fluid">
+            <a class="navbar-brand fw-bold fs-4" href="{{ url_for('dashboard') }}">
+                🌱 AI Shelf Life
+            </a>
+            <div class="navbar-nav ms-auto d-flex flex-row gap-3">
+                <a class="nav-link text-white fw-semibold active" href="{{ url_for('dashboard') }}">Dashboard</a>
+                <a class="nav-link text-white fw-semibold" href="{{ url_for('add_product') }}">Add Product</a>
+                <a class="nav-link text-white fw-semibold" href="{{ url_for('product_list') }}">Product List</a>
+                <a class="nav-link text-white fw-semibold" href="{{ url_for('ai_prediction') }}">AI Prediction</a>
+                <a class="nav-link text-white fw-semibold" href="{{ url_for('notifications') }}">Notifications</a>
+                <a class="nav-link text-white fw-semibold" href="{{ url_for('profile') }}">Profile</a>
+                <a class="btn btn-outline-light btn-sm px-3" href="{{ url_for('login') }}">Logout</a>
+            </div>
         </div>
     </nav>
 
     <div class="container">
         
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="fw-bold text-dark"><i class="fa-solid fa-gauge me-2 text-success"></i>Dashboard Overview</h2>
-        </div>
+        <h3 class="fw-bold mb-4 text-dark">Dashboard Overview</h3>
 
-        <div class="row g-4 mb-5">
+        <div class="row g-3 mb-4">
             <div class="col-md-3">
-                <div class="card card-box bg-total p-3 shadow-sm">
+                <div class="card-stat bg-total">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h6 class="text-uppercase mb-1">Total Products</h6>
-                            <h2 class="fw-bold mb-0">{{ total if total else 24 }}</h2>
+                            <div class="text-uppercase small">Total Products</div>
+                            <div class="stat-number">{{ total if total else 24 }}</div>
                         </div>
-                        <i class="fa-solid fa-boxes-stacked stat-icon"></i>
+                        <i class="fa-solid fa-box-archive fa-2x opacity-75"></i>
                     </div>
                 </div>
             </div>
 
             <div class="col-md-3">
-                <div class="card card-box bg-fresh p-3 shadow-sm">
+                <div class="card-stat bg-fresh">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h6 class="text-uppercase mb-1">Fresh Items</h6>
-                            <h2 class="fw-bold mb-0">{{ fresh if fresh else 16 }}</h2>
+                            <div class="text-uppercase small">Fresh Items</div>
+                            <div class="stat-number">{{ fresh if fresh else 16 }}</div>
                         </div>
-                        <i class="fa-solid fa-apple-whole stat-icon"></i>
+                        <i class="fa-solid fa-leaf fa-2x opacity-75"></i>
                     </div>
                 </div>
             </div>
 
             <div class="col-md-3">
-                <div class="card card-box bg-expiring p-3 shadow-sm">
+                <div class="card-stat bg-expiring">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h6 class="text-uppercase mb-1">Expiring Soon</h6>
-                            <h2 class="fw-bold mb-0">{{ expiring if expiring else 5 }}</h2>
+                            <div class="text-uppercase small">Expiring Soon</div>
+                            <div class="stat-number">{{ expiring if expiring else 5 }}</div>
                         </div>
-                        <i class="fa-solid fa-hourglass-half stat-icon"></i>
+                        <i class="fa-solid fa-hourglass-half fa-2x opacity-75"></i>
                     </div>
                 </div>
             </div>
 
             <div class="col-md-3">
-                <div class="card card-box bg-expired p-3 shadow-sm">
+                <div class="card-stat bg-expired">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h6 class="text-uppercase mb-1">Expired Items</h6>
-                            <h2 class="fw-bold mb-0">{{ expired if expired else 3 }}</h2>
+                            <div class="text-uppercase small">Expired Items</div>
+                            <div class="stat-number">{{ expired if expired else 3 }}</div>
                         </div>
-                        <i class="fa-solid fa-triangle-exclamation stat-icon"></i>
+                        <i class="fa-solid fa-triangle-exclamation fa-2x opacity-75"></i>
                     </div>
                 </div>
             </div>
@@ -128,35 +119,23 @@
 
         <div class="row g-4">
             <div class="col-md-6">
-                <div class="card card-box bg-white p-4 shadow-sm">
-                    <h5 class="fw-bold text-dark mb-3"><i class="fa-solid fa-clock text-warning me-2"></i>Expiring Soon</h5>
+                <div class="card content-card p-4">
+                    <h5 class="fw-bold mb-3 text-warning">⚠️ Expiring Soon</h5>
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <div>
-                                <strong>🥛 Milk</strong>
-                                <div class="text-muted small">Expires in 1 day</div>
-                            </div>
-                            <span class="badge bg-warning text-dark">Urgent</span>
+                            <span>🥛 <strong>Milk</strong> <br><small class="text-muted">Expires in 1 day</small></span>
+                            <span class="badge bg-danger">Critical</span>
                         </li>
                         <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <div>
-                                <strong>🍞 Bread</strong>
-                                <div class="text-muted small">Expires in 2 days</div>
-                            </div>
-                            <span class="badge bg-warning text-dark">Soon</span>
+                            <span>🍞 <strong>Bread</strong> <br><small class="text-muted">Expires in 2 days</small></span>
+                            <span class="badge bg-warning text-dark">Warning</span>
                         </li>
                         <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <div>
-                                <strong>🥣 Yogurt</strong>
-                                <div class="text-muted small">Expires in 2 days</div>
-                            </div>
-                            <span class="badge bg-warning text-dark">Soon</span>
+                            <span>🥣 <strong>Yogurt</strong> <br><small class="text-muted">Expires in 2 days</small></span>
+                            <span class="badge bg-warning text-dark">Warning</span>
                         </li>
                         <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <div>
-                                <strong>🍎 Apple</strong>
-                                <div class="text-muted small">Expires in 3 days</div>
-                            </div>
+                            <span>🍎 <strong>Apple</strong> <br><small class="text-muted">Expires in 3 days</small></span>
                             <span class="badge bg-info text-dark">Monitor</span>
                         </li>
                     </ul>
@@ -164,12 +143,12 @@
             </div>
 
             <div class="col-md-6">
-                <div class="card card-box bg-white p-4 shadow-sm text-center">
-                    <h5 class="fw-bold text-dark mb-3"><i class="fa-solid fa-wand-magic-sparkles text-success me-2"></i>AI Quick Assistant</h5>
-                    <p class="text-muted">Analyze your food freshness or add new items to keep track of their shelf life easily.</p>
-                    <div class="d-grid gap-2 d-md-block mt-4">
-                        <a href="{{ url_for('add_product') }}" class="btn btn-success me-md-2 px-4 py-2"><i class="fa-solid fa-plus me-1"></i> Add New Product</a>
-                        <a href="{{ url_for('ai_prediction') }}" class="btn btn-outline-success px-4 py-2"><i class="fa-solid fa-robot me-1"></i> Test AI Prediction</a>
+                <div class="card content-card p-4 text-center">
+                    <h5 class="fw-bold mb-3 text-success">⚡ Quick Actions</h5>
+                    <p class="text-muted">Add new food items or test AI freshness prediction right away.</p>
+                    <div class="d-flex justify-content-center gap-3 mt-4">
+                        <a href="{{ url_for('add_product') }}" class="btn btn-success px-4 py-2">➕ Add Product</a>
+                        <a href="{{ url_for('ai_prediction') }}" class="btn btn-outline-success px-4 py-2">🤖 AI Prediction</a>
                     </div>
                 </div>
             </div>
