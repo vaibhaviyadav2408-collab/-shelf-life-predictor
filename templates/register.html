@@ -8,10 +8,22 @@
     <div class="card p-4 shadow-lg" style="width: 400px; border-radius: 12px;">
         <h3 class="text-center text-success mb-3">Create Account</h3>
         <form action="{{ url_for('register') }}" method="POST">
-            <div class="mb-2"><label>Full Name</label><input type="text" class="form-control" required></div>
-            <div class="mb-2"><label>Email</label><input type="email" class="form-control" required></div>
-            <div class="mb-2"><label>Mobile Number</label><input type="text" class="form-control" required></div>
-            <div class="mb-2"><label>Password</label><input type="password" class="form-control" required></div>
+            <div class="mb-2">
+                <label>Full Name</label>
+                <input type="text" name="name" class="form-control" placeholder="Enter your full name" required>
+            </div>
+            <div class="mb-2">
+                <label>Email</label>
+                <input type="email" name="email" class="form-control" placeholder="Enter your email" required>
+            </div>
+            <div class="mb-2">
+                <label>Mobile Number</label>
+                <input type="text" name="mobile" class="form-control" placeholder="Enter mobile number" required>
+            </div>
+            <div class="mb-2">
+                <label>Password</label>
+                <input type="password" name="password" class="form-control" placeholder="Enter password" required>
+            </div>
             <button type="submit" class="btn btn-success w-100 mt-2">Register</button>
         </form>
         <p class="mt-2 text-center">Already have an account? <a href="{{ url_for('login') }}">Login</a></p>
