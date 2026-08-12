@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>About Us</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="p-4 bg-light">
+    <h2>ℹ️ About Project</h2>
+    <p>हा प्रोजेक्ट AI आणि Flask चा वापर करून अन्नाची नासाडी रोखण्यासाठी तयार करण्यात आला आहे.</p>
+    <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+</body>
+</html>
