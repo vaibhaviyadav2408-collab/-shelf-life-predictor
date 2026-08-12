@@ -3,19 +3,25 @@ from flask import Flask, render_template, request, redirect, url_for, flash, jso
 import firebase_admin
 from firebase_admin import credentials, firestore
 
-app = Flask(__name__)
+# template_folder='.' जोडल्यामुळे मूळ फोल्डरमधील HTML फाईल्स योग्य रीतीने लोड होतील
+app = Flask(__name__, template_folder='.')
 app.secret_key = "aishelflifesupersecretkey"
 
-# ==================== FIREBASE SETUP ====================
+# ==================== FIREBASE SETUP (FULLY SAFE) ====================
 db = None
-try:
-    if os.path.exists('serviceAccountKey.json') and not firebase_admin._apps:
+if not firebase_admin._apps:
+    try:
         cred = credentials.Certificate('serviceAccountKey.json')
         firebase_admin.initialize_app(cred)
         db = firestore.client()
         print("✅ Firebase Connected Successfully!")
-except Exception as e:
-    print(f"⚠️ Firebase Warning: {e}")
+    except Exception as e:
+        print(f"❌ Firebase Connection Error: {e}")
+else:
+    try:
+        db = firestore.client()
+    except Exception as e:
+        print(f"❌ Firebase Client Error: {e}")
 
 # ==================== ROUTES ====================
 
@@ -31,16 +37,20 @@ def login():
         email = request.form.get('email')
         password = request.form.get('password')
         
-        # Database aso wa naaso, direct Login hoiil
         try:
             if db:
                 users_ref = db.collection('users').where('email', '==', email).where('password', '==', password).stream()
                 user_list = [u.to_dict() for u in users_ref]
-        except Exception:
-            pass
-            
-        flash("Login Successful!", "success")
-        return redirect(url_for('dashboard'))
+                
+                if user_list:
+                    flash("Login Successful!", "success")
+                    return redirect(url_for('dashboard'))
+                else:
+                    flash("Invalid email or password!", "danger")
+            else:
+                flash("Database connection error!", "danger")
+        except Exception as e:
+            flash("Database Error! Check Firebase setup.", "danger")
             
     return render_template('login.html')
 
@@ -63,11 +73,12 @@ def register():
         try:
             if db:
                 db.collection('users').add(user_data)
-        except Exception:
-            pass
-            
-        flash("Registration Successful! Please Login.", "success")
-        return redirect(url_for('login'))
+                flash("Registration Successful! Please Login.", "success")
+                return redirect(url_for('login'))
+            else:
+                flash("Database connection error!", "danger")
+        except Exception as e:
+            flash("Registration Failed!", "danger")
             
     return render_template('register.html')
 
@@ -106,11 +117,12 @@ def add_product():
         try:
             if db:
                 db.collection('products').add(product_data)
-        except Exception:
-            pass
-            
-        flash("Product Added Successfully!", "success")
-        return redirect(url_for('product_list'))
+                flash("Product Added Successfully to Firebase!", "success")
+                return redirect(url_for('product_list'))
+            else:
+                flash("Database connection error!", "danger")
+        except Exception as e:
+            flash("Failed to add product!", "danger")
             
     return render_template('add_product.html')
 
@@ -198,4 +210,4 @@ def chat_api():
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
-    app.run(host='0.0.0.0', port=port, debug=True)
+    app.run(host='0.0.
