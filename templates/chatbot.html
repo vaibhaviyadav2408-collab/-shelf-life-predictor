@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Assistant - AI Shelf Life</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .chat-box {
+            height: 400px;
+            overflow-y: auto;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 15px;
+            background: #ffffff;
+        }
+        .msg-bubble {
+            max-width: 75%;
+            padding: 10px 15px;
+            border-radius: 15px;
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+        }
+        .user-msg {
+            background-color: #1d7a3e;
+            color: white;
+            margin-left: auto;
+            border-bottom-right-radius: 2px;
+        }
+        .bot-msg {
+            background-color: #f1f5f9;
+            color: #1e293b;
+            margin-right: auto;
+            border-bottom-left-radius: 2px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="sidebar-brand">🥦 AI Shelf Life <br><small class="text-muted fw-normal" style="font-size:0.75rem;">Predictor</small></div>
+        <a href="{{ url_for('dashboard') }}">📊 Dashboard</a>
+        <a href="{{ url_for('add_product') }}">➕ Add Product</a>
+        <a href="{{ url_for('product_list') }}">📋 Product List</a>
+        <a href="{{ url_for('ai_prediction') }}">🤖 AI Prediction</a>
+        <a href="{{ url_for('chatbot') }}" class="active">💬 AI Chatbot</a>
+        <a href="{{ url_for('notifications') }}">🔔 Notifications</a>
+        <a href="{{ url_for('profile') }}">👤 Profile</a>
+        <hr class="mx-3 text-muted">
+        <a href="{{ url_for('index') }}" class="text-danger">🚪 Logout</a>
+    </div>
+
+    <div class="main-content">
+        <h3 class="fw-bold mb-4">🤖 AI Freshness Assistant</h3>
+
+        <div class="card card-custom p-4" style="max-width: 700px; margin: 0 auto;">
+            <div class="chat-box mb-3" id="chatContainer">
+                <div class="msg-bubble bot-msg">
+                    👋 Hello! I am your AI Freshness Assistant. Ask me anything about food storage or shelf life!
+                </div>
+            </div>
+
+            <div class="input-group">
+                <input type="text" id="userInput" class="form-control p-2" placeholder="Ask about Milk, Bread, Apple..." onkeypress="handleKeyPress(event)">
+                <button class="btn btn-green px-4" onclick="sendMessage()">Send 🚀</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function sendMessage() {
+            const input = document.getElementById('userInput');
+            const message = input.value.trim();
+            if (!message) return;
+
+            const chatContainer = document.getElementById('chatContainer');
+
+            // Show User Message
+            chatContainer.innerHTML += `<div class="msg-bubble user-msg">${message}</div>`;
+            input.value = '';
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+
+            // Fetch Bot Response from app.py API
+            try {
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: message })
+                });
+                const data = await response.json();
+
+                // Show Bot Reply
+                chatContainer.innerHTML += `<div class="msg-bubble bot-msg">${data.response}</div>`;
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            } catch (err) {
+                chatContainer.innerHTML += `<div class="msg-bubble bot-msg text-danger">Error connecting to AI Server.</div>`;
+            }
+        }
+
+        function handleKeyPress(e) {
+            if (e.key === 'Enter') sendMessage();
+        }
+    </script>
+</body>
+</html>
