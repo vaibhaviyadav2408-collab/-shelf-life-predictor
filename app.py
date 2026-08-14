@@ -3,7 +3,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash, jso
 import firebase_admin
 from firebase_admin import credentials, firestore
 
-# Standard Flask setup (templates folder sathi)
+# standard templates folder settings
 app = Flask(__name__)
 app.secret_key = "aishelflifesupersecretkey"
 
@@ -75,6 +75,24 @@ def notifications():
 def profile():
     user = {"name": "User Name", "email": "user@gmail.com", "mobile": "9876543210"}
     return render_template('profile.html', user=user)
+
+# ==================== AI CHATBOT API ROUTE ====================
+@app.route('/chat', methods=['POST'])
+def chat():
+    user_msg = request.json.get("message", "").lower()
+    
+    if "milk" in user_msg or "doodh" in user_msg:
+        response = "🥛 Fresh milk stays good for 3-5 days in the fridge. Boil it to extend shelf life!"
+    elif "bread" in user_msg:
+        response = "🍞 Bread lasts about 3-5 days at room temperature and up to 2 weeks in the fridge."
+    elif "apple" in user_msg or "fruit" in user_msg:
+        response = "🍎 Fruits like apples stay fresh for 1-2 weeks at room temp and a month in the fridge."
+    elif "hi" in user_msg or "hello" in user_msg or "hey" in user_msg:
+        response = "Hello! 👋 I am your AI Shelf Life Assistant. Ask me about storing food items!"
+    else:
+        response = f"🤖 Storage tip for '{user_msg}': Keep in a cool, dry environment away from direct sunlight."
+        
+    return jsonify({"reply": response})
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
