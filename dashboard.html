@@ -8,176 +8,50 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        body {
-            background-color: #f8fafc;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
-        }
-        /* Sidebar Styling */
+        body { background-color: #f8fafc; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; }
+        
+        /* Dark Left Sidebar */
         .sidebar {
-            width: 250px;
-            height: 100vh;
-            position: fixed;
-            top: 0;
-            left: 0;
-            background: #1e293b;
-            color: #ffffff;
-            padding: 25px 20px;
-            display: flex;
-            flex-direction: column;
-            z-index: 1000;
+            width: 250px; height: 100vh; position: fixed; top: 0; left: 0;
+            background: #1e293b; color: #ffffff; padding: 25px 20px;
+            display: flex; flex-direction: column; z-index: 1000;
         }
-        .sidebar-brand {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: #10b981;
-            margin-bottom: 35px;
-            display: flex;
-            align-items: center;
-        }
+        .sidebar-brand { font-size: 1.3rem; font-weight: 700; color: #10b981; margin-bottom: 35px; }
         .sidebar a {
-            color: #94a3b8;
-            text-decoration: none;
-            padding: 12px 16px;
-            border-radius: 8px;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            font-weight: 500;
-            transition: all 0.2s ease;
+            color: #94a3b8; text-decoration: none; padding: 12px 16px; border-radius: 8px;
+            margin-bottom: 8px; display: flex; align-items: center; font-weight: 500;
         }
-        .sidebar a:hover, .sidebar a.active {
-            background: #334155;
-            color: #ffffff;
-        }
-        /* Main Right Content */
-        .main-content {
-            margin-left: 250px;
-            padding: 35px;
-            min-height: 100vh;
-        }
-        .card-custom {
-            border: none;
-            border-radius: 14px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
-            background: #ffffff;
-        }
-        .stat-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-        }
-        .chart-container {
-            width: 170px;
-            height: 170px;
-            border-radius: 50%;
-            background: conic-gradient(#10b981 0% 66%, #f59e0b 66% 87%, #ef4444 87% 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: auto;
-        }
-        .chart-donut {
-            width: 115px;
-            height: 115px;
-            background: #ffffff;
-            border-radius: 50%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
+        .sidebar a:hover, .sidebar a.active { background: #334155; color: #ffffff; }
 
-        /* Floating Chatbot Widget Styling */
+        /* Main Content Area */
+        .main-content { margin-left: 250px; padding: 35px; min-height: 100vh; }
+        .card-custom { border: none; border-radius: 14px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03); background: #ffffff; }
+        .stat-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+
+        /* Floating AI Chatbot Button */
         .chat-btn {
-            position: fixed;
-            bottom: 25px;
-            right: 25px;
-            width: 60px;
-            height: 60px;
-            background: #10b981;
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
-            z-index: 1050;
-            border: none;
+            position: fixed; bottom: 25px; right: 25px; width: 60px; height: 60px;
+            background: #10b981; color: white; border-radius: 50%; display: flex;
+            align-items: center; justify-content: center; font-size: 24px;
+            cursor: pointer; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4); border: none; z-index: 1050;
         }
         .chat-box {
-            position: fixed;
-            bottom: 95px;
-            right: 25px;
-            width: 340px;
-            height: 420px;
-            background: #ffffff;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-            display: none;
-            flex-direction: column;
-            overflow: hidden;
-            z-index: 1050;
-            border: 1px solid #e2e8f0;
+            position: fixed; bottom: 95px; right: 25px; width: 340px; height: 420px;
+            background: #ffffff; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            display: none; flex-direction: column; overflow: hidden; z-index: 1050; border: 1px solid #e2e8f0;
         }
-        .chat-header {
-            background: #10b981;
-            color: white;
-            padding: 15px;
-            font-weight: bold;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .chat-body {
-            flex: 1;
-            padding: 15px;
-            overflow-y: auto;
-            background: #f8fafc;
-            font-size: 14px;
-        }
-        .chat-msg {
-            margin-bottom: 10px;
-            max-width: 80%;
-            padding: 10px 14px;
-            border-radius: 12px;
-            font-size: 13px;
-            line-height: 1.4;
-        }
-        .msg-bot {
-            background: #e2e8f0;
-            color: #1e293b;
-            align-self: flex-start;
-            border-bottom-left-radius: 2px;
-        }
-        .msg-user {
-            background: #10b981;
-            color: white;
-            margin-left: auto;
-            border-bottom-right-radius: 2px;
-        }
-        .chat-footer {
-            padding: 10px;
-            background: white;
-            border-top: 1px solid #e2e8f0;
-            display: flex;
-            gap: 8px;
-        }
+        .chat-header { background: #10b981; color: white; padding: 15px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; }
+        .chat-body { flex: 1; padding: 15px; overflow-y: auto; background: #f8fafc; font-size: 14px; }
+        .chat-msg { margin-bottom: 10px; max-width: 80%; padding: 10px 14px; border-radius: 12px; font-size: 13px; line-height: 1.4; }
+        .msg-bot { background: #e2e8f0; color: #1e293b; align-self: flex-start; border-bottom-left-radius: 2px; }
+        .msg-user { background: #10b981; color: white; margin-left: auto; border-bottom-right-radius: 2px; }
+        .chat-footer { padding: 10px; background: white; border-top: 1px solid #e2e8f0; display: flex; gap: 8px; }
     </style>
 </head>
 <body>
 
 <div class="sidebar">
-    <div class="sidebar-brand">
-        <i class="fa-solid fa-leaf me-2"></i> AI Shelf Life
-    </div>
+    <div class="sidebar-brand"><i class="fa-solid fa-leaf me-2"></i> AI Shelf Life</div>
     <a href="/dashboard" class="active"><i class="fa-solid fa-chart-pie me-3"></i> Dashboard</a>
     <a href="/add-product"><i class="fa-solid fa-plus me-3"></i> Add Product</a>
     <a href="/product-list"><i class="fa-solid fa-list me-3"></i> Product List</a>
@@ -194,116 +68,32 @@
         <div class="col-md-3">
             <div class="card card-custom p-3 border-start border-primary border-4">
                 <div class="d-flex align-items-center justify-content-between">
-                    <div>
-                        <p class="text-muted mb-1 small fw-semibold">Total Products</p>
-                        <h3 class="fw-bold mb-0">24</h3>
-                    </div>
-                    <div class="stat-icon bg-primary-subtle text-primary">
-                        <i class="fa-solid fa-box"></i>
-                    </div>
+                    <div><p class="text-muted mb-1 small fw-semibold">Total Products</p><h3 class="fw-bold mb-0">24</h3></div>
+                    <div class="stat-icon bg-primary-subtle text-primary"><i class="fa-solid fa-box"></i></div>
                 </div>
             </div>
         </div>
-
         <div class="col-md-3">
             <div class="card card-custom p-3 border-start border-success border-4">
                 <div class="d-flex align-items-center justify-content-between">
-                    <div>
-                        <p class="text-muted mb-1 small fw-semibold">Fresh Items</p>
-                        <h3 class="fw-bold mb-0 text-success">16</h3>
-                    </div>
-                    <div class="stat-icon bg-success-subtle text-success">
-                        <i class="fa-solid fa-seedling"></i>
-                    </div>
+                    <div><p class="text-muted mb-1 small fw-semibold">Fresh Items</p><h3 class="fw-bold mb-0 text-success">16</h3></div>
+                    <div class="stat-icon bg-success-subtle text-success"><i class="fa-solid fa-seedling"></i></div>
                 </div>
             </div>
         </div>
-
         <div class="col-md-3">
             <div class="card card-custom p-3 border-start border-warning border-4">
                 <div class="d-flex align-items-center justify-content-between">
-                    <div>
-                        <p class="text-muted mb-1 small fw-semibold">Expiring Soon</p>
-                        <h3 class="fw-bold mb-0 text-warning">5</h3>
-                    </div>
-                    <div class="stat-icon bg-warning-subtle text-warning">
-                        <i class="fa-solid fa-hourglass-half"></i>
-                    </div>
+                    <div><p class="text-muted mb-1 small fw-semibold">Expiring Soon</p><h3 class="fw-bold mb-0 text-warning">5</h3></div>
+                    <div class="stat-icon bg-warning-subtle text-warning"><i class="fa-solid fa-hourglass-half"></i></div>
                 </div>
             </div>
         </div>
-
         <div class="col-md-3">
             <div class="card card-custom p-3 border-start border-danger border-4">
                 <div class="d-flex align-items-center justify-content-between">
-                    <div>
-                        <p class="text-muted mb-1 small fw-semibold">Expired Items</p>
-                        <h3 class="fw-bold mb-0 text-danger">3</h3>
-                    </div>
-                    <div class="stat-icon bg-danger-subtle text-danger">
-                        <i class="fa-solid fa-triangle-exclamation"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row g-4">
-        <div class="col-md-6">
-            <div class="card card-custom p-4 h-100">
-                <h5 class="fw-bold mb-3"><i class="fa-solid fa-clock text-warning me-2"></i>Expiring Soon</h5>
-                <div class="list-group list-group-flush">
-                    <div class="list-group-item d-flex justify-content-between align-items-center border-bottom py-3 px-0">
-                        <div class="d-flex align-items-center">
-                            <span class="fs-4 me-3">🥛</span>
-                            <div>
-                                <h6 class="mb-0 fw-semibold">Milk</h6>
-                                <small class="text-muted">Expires in 1 day</small>
-                            </div>
-                        </div>
-                        <span class="badge bg-danger-subtle text-danger px-3 py-2 rounded-pill">Urgent</span>
-                    </div>
-
-                    <div class="list-group-item d-flex justify-content-between align-items-center border-bottom py-3 px-0">
-                        <div class="d-flex align-items-center">
-                            <span class="fs-4 me-3">🍞</span>
-                            <div>
-                                <h6 class="mb-0 fw-semibold">Bread</h6>
-                                <small class="text-muted">Expires in 2 days</small>
-                            </div>
-                        </div>
-                        <span class="badge bg-warning-subtle text-warning px-3 py-2 rounded-pill">Warning</span>
-                    </div>
-
-                    <div class="list-group-item d-flex justify-content-between align-items-center border-0 py-3 px-0">
-                        <div class="d-flex align-items-center">
-                            <span class="fs-4 me-3">🥣</span>
-                            <div>
-                                <h6 class="mb-0 fw-semibold">Yogurt</h6>
-                                <small class="text-muted">Expires in 2 days</small>
-                            </div>
-                        </div>
-                        <span class="badge bg-warning-subtle text-warning px-3 py-2 rounded-pill">Warning</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-6">
-            <div class="card card-custom p-4 h-100 text-center">
-                <h5 class="fw-bold mb-3 text-start">Products Overview</h5>
-                <div class="d-flex justify-content-center align-items-center my-auto py-3">
-                    <div class="chart-container">
-                        <div class="chart-donut">
-                            <span class="fw-bold fs-3">24</span>
-                            <small class="text-muted d-block">Total</small>
-                        </div>
-                    </div>
-                </div>
-                <div class="d-flex justify-content-center gap-3 mt-3">
-                    <small><i class="fa-solid fa-circle text-success me-1"></i> Fresh (16)</small>
-                    <small><i class="fa-solid fa-circle text-warning me-1"></i> Expiring (5)</small>
-                    <small><i class="fa-solid fa-circle text-danger me-1"></i> Expired (3)</small>
+                    <div><p class="text-muted mb-1 small fw-semibold">Expired Items</p><h3 class="fw-bold mb-0 text-danger">3</h3></div>
+                    <div class="stat-icon bg-danger-subtle text-danger"><i class="fa-solid fa-triangle-exclamation"></i></div>
                 </div>
             </div>
         </div>
@@ -318,7 +108,7 @@
         <i class="fa-solid fa-xmark" style="cursor:pointer;" onclick="toggleChat()"></i>
     </div>
     <div class="chat-body d-flex flex-column" id="chatMessages">
-        <div class="chat-msg msg-bot">Hello! 👋 Ask me anything about food shelf life (e.g. Milk, Bread, Apples).</div>
+        <div class="chat-msg msg-bot">Hello! 👋 Ask me anything about food shelf life!</div>
     </div>
     <div class="chat-footer">
         <input type="text" id="chatInput" class="form-control form-control-sm" placeholder="Ask something..." onkeypress="handleKey(event)">
@@ -331,18 +121,13 @@
         const box = document.getElementById('chatBox');
         box.style.display = (box.style.display === 'flex') ? 'none' : 'flex';
     }
-
-    function handleKey(e) {
-        if (e.key === 'Enter') sendMessage();
-    }
-
+    function handleKey(e) { if (e.key === 'Enter') sendMessage(); }
     async function sendMessage() {
         const input = document.getElementById('chatInput');
         const text = input.value.trim();
         if (!text) return;
 
         const container = document.getElementById('chatMessages');
-
         const userDiv = document.createElement('div');
         userDiv.className = 'chat-msg msg-user';
         userDiv.innerText = text;
@@ -357,15 +142,12 @@
                 body: JSON.stringify({ message: text })
             });
             const data = await res.json();
-
             const botDiv = document.createElement('div');
             botDiv.className = 'chat-msg msg-bot';
             botDiv.innerText = data.reply;
             container.appendChild(botDiv);
             container.scrollTop = container.scrollHeight;
-        } catch (err) {
-            console.error(err);
-        }
+        } catch (err) { console.error(err); }
     }
 </script>
 
