@@ -3,8 +3,8 @@ from flask import Flask, render_template, request, redirect, url_for, flash, jso
 import firebase_admin
 from firebase_admin import credentials, firestore
 
-# Flask setup
-app = Flask(__name__, template_folder='.')
+# Standard Flask setup (templates folder sathi)
+app = Flask(__name__)
 app.secret_key = "aishelflifesupersecretkey"
 
 # ==================== FIREBASE SETUP ====================
@@ -77,6 +77,5 @@ def profile():
     return render_template('profile.html', user=user)
 
 if __name__ == '__main__':
-    # Render cloud ani Localhost donhinnsathi working:
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
