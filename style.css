@@ -1,106 +1,64 @@
-:root {
-    --primary-green: #1d7a3e;
-    --light-green: #e8f5e9;
-    --dark-green: #114b25;
-    --accent-green: #2e7d32;
-    --bg-light: #f8faf9;
-    --text-dark: #2c3e50;
-    --card-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+* {
+    font-family: 'Poppins', sans-serif;
 }
 
-body {
-    background-color: var(--bg-light);
-    font-family: 'Inter', 'Segoe UI', sans-serif;
-    color: var(--text-dark);
-}
-
-/* Sidebar Styling */
-.sidebar {
-    height: 100vh;
-    background-color: #ffffff;
-    border-right: 1px solid #e2e8f0;
-    position: fixed;
-    width: 240px;
-    padding-top: 20px;
-}
-
-.sidebar-brand {
-    padding: 0 20px 20px 20px;
-    font-weight: bold;
-    color: var(--primary-green);
-    font-size: 1.2rem;
-}
-
-.sidebar a {
-    color: #555;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 24px;
-    font-weight: 500;
-    font-size: 0.95rem;
-    transition: all 0.2s ease;
-}
-
-.sidebar a:hover, .sidebar a.active {
-    background-color: var(--light-green);
-    color: var(--primary-green);
-    border-left: 4px solid var(--primary-green);
-    font-weight: 600;
-}
-
-.main-content {
-    margin-left: 240px;
-    padding: 30px;
-}
-
-/* Card Styling */
-.card-custom {
-    border: none;
-    border-radius: 16px;
-    background: #ffffff;
-    box-shadow: var(--card-shadow);
-}
-
-/* Split Screen Login / Register */
-.auth-box {
-    display: flex;
+.auth-body {
+    background-color: #f0f2f5;
     min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
 }
 
+/* Card Container Styling */
+.auth-card {
+    background: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    width: 100%;
+    max-width: 850px;
+    min-height: 480px;
+}
+
+/* Left Banner Styling */
 .auth-banner {
-    background: linear-gradient(135deg, #1d7a3e, #0e4420);
-    color: white;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 40px;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    position: relative;
 }
 
-.auth-form-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 40px;
+.alt-img {
+    filter: drop-shadow(0px 8px 12px rgba(0, 0, 0, 0.15));
 }
 
-/* Status Badges */
-.badge-fresh { background-color: #d4edda; color: #155724; font-weight: 600; padding: 6px 12px; border-radius: 20px; }
-.badge-expiring { background-color: #fff3cd; color: #856404; font-weight: 600; padding: 6px 12px; border-radius: 20px; }
-.badge-expired { background-color: #f8d7da; color: #721c24; font-weight: 600; padding: 6px 12px; border-radius: 20px; }
+/* Custom Input Fields */
+.custom-input {
+    border: 1.5px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 14px;
+    transition: all 0.2s ease-in-out;
+}
 
-/* Buttons */
-.btn-green {
-    background-color: var(--primary-green);
-    color: white;
-    border-radius: 8px;
-    padding: 10px 20px;
-    font-weight: 600;
+.custom-input:focus {
+    border-color: #10b981;
+    box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15);
+}
+
+/* Button Styling */
+.btn-custom-green {
+    background-color: #10b981;
+    color: #ffffff;
     border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    transition: background-color 0.2s ease-in-out;
 }
-.btn-green:hover {
-    background-color: var(--dark-green);
-    color: white;
+
+.btn-custom-green:hover {
+    background-color: #059669;
+    color: #ffffff;
 }
