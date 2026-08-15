@@ -3,7 +3,6 @@ from flask import Flask, render_template, request, redirect, url_for, flash, jso
 import firebase_admin
 from firebase_admin import credentials, firestore
 
-# Standard Flask Initialization (templates folder automatic pick hoil)
 app = Flask(__name__)
 app.secret_key = "aishelflifesupersecretkey"
 
@@ -20,7 +19,7 @@ try:
 except Exception as e:
     print(f"⚠️ Firebase Connection Error: {e}")
 
-# Dummy Data saathi List
+# Dummy Data
 sample_products = [
     {"name": "Milk 1L", "category": "Dairy", "expiry": "2026-08-16", "status": "Expiring Soon"},
     {"name": "Whole Wheat Bread", "category": "Bakery", "expiry": "2026-08-18", "status": "Fresh"},
@@ -82,6 +81,11 @@ def notifications():
 def profile():
     user = {"name": "Demo User", "email": "user@example.com", "mobile": "9876543210"}
     return render_template('profile.html', user=user)
+
+# FIX: Added Missing 'admin' Route to Stop BuildError 500
+@app.route('/admin')
+def admin():
+    return redirect(url_for('dashboard'))
 
 # ==================== CHATBOT ROUTE ====================
 @app.route('/chat', methods=['POST'])
