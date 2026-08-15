@@ -3,6 +3,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash, jso
 import firebase_admin
 from firebase_admin import credentials, firestore
 
+# Standard Flask Initialization (templates folder automatic pick hoil)
 app = Flask(__name__)
 app.secret_key = "aishelflifesupersecretkey"
 
@@ -19,11 +20,18 @@ try:
 except Exception as e:
     print(f"⚠️ Firebase Connection Error: {e}")
 
+# Dummy Data saathi List
+sample_products = [
+    {"name": "Milk 1L", "category": "Dairy", "expiry": "2026-08-16", "status": "Expiring Soon"},
+    {"name": "Whole Wheat Bread", "category": "Bakery", "expiry": "2026-08-18", "status": "Fresh"},
+    {"name": "Fresh Apples", "category": "Fruits", "expiry": "2026-08-25", "status": "Fresh"},
+]
+
 # ==================== ROUTES ====================
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('dashboard.html', total=24, fresh=16, expiring=5, expired=3)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -52,7 +60,7 @@ def add_product():
 
 @app.route('/product-list')
 def product_list():
-    return render_template('product_list.html', products=[])
+    return render_template('product_list.html', products=sample_products)
 
 @app.route('/ai-prediction', methods=['GET', 'POST'])
 def ai_prediction():
@@ -72,7 +80,7 @@ def notifications():
 
 @app.route('/profile')
 def profile():
-    user = {"name": "User Name", "email": "user@gmail.com", "mobile": "9876543210"}
+    user = {"name": "Demo User", "email": "user@example.com", "mobile": "9876543210"}
     return render_template('profile.html', user=user)
 
 # ==================== CHATBOT ROUTE ====================
