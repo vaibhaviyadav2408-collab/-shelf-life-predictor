@@ -3,104 +3,161 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Assistant - AI Shelf Life</title>
+    <title>AI Assistant Chatbot - AI Shelf Life Predictor</title>
+
+    <!-- Bootstrap 5 CSS CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <!-- Font Awesome 6 Icons CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
-        .chat-box {
-            height: 400px;
-            overflow-y: auto;
-            border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            padding: 15px;
+        body {
+            background-color: #f1f5f9;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            padding: 30px;
+        }
+        .card-custom {
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
             background: #ffffff;
         }
-        .msg-bubble {
-            max-width: 75%;
-            padding: 10px 15px;
-            border-radius: 15px;
-            margin-bottom: 10px;
-            font-size: 0.95rem;
+        .chat-container {
+            height: 500px;
         }
-        .user-msg {
-            background-color: #1d7a3e;
-            color: white;
-            margin-left: auto;
-            border-bottom-right-radius: 2px;
+        .chat-box {
+            background-color: #f8fafc;
+            border-radius: 12px;
         }
-        .bot-msg {
-            background-color: #f1f5f9;
-            color: #1e293b;
-            margin-right: auto;
-            border-bottom-left-radius: 2px;
+        .msg-bubble-bot {
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px 16px 16px 4px;
+        }
+        .msg-bubble-user {
+            background-color: #10b981;
+            color: #ffffff;
+            border-radius: 16px 16px 4px 16px;
+        }
+        .avatar-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
         }
     </style>
 </head>
 <body>
 
-    <div class="sidebar">
-        <div class="sidebar-brand">🥦 AI Shelf Life <br><small class="text-muted fw-normal" style="font-size:0.75rem;">Predictor</small></div>
-        <a href="{{ url_for('dashboard') }}">📊 Dashboard</a>
-        <a href="{{ url_for('add_product') }}">➕ Add Product</a>
-        <a href="{{ url_for('product_list') }}">📋 Product List</a>
-        <a href="{{ url_for('ai_prediction') }}">🤖 AI Prediction</a>
-        <a href="{{ url_for('chatbot') }}" class="active">💬 AI Chatbot</a>
-        <a href="{{ url_for('notifications') }}">🔔 Notifications</a>
-        <a href="{{ url_for('profile') }}">👤 Profile</a>
-        <hr class="mx-3 text-muted">
-        <a href="{{ url_for('index') }}" class="text-danger">🚪 Logout</a>
+<div class="container-fluid" style="max-width: 900px;">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3 class="fw-bold text-dark mb-1">AI Food Assistant Chatbot</h3>
+            <p class="text-muted small mb-0">Ask anything about food storage, shelf life tips, and preservation methods.</p>
+        </div>
+        <span class="badge bg-success-subtle text-success border px-3 py-2 rounded-pill">
+            <i class="fa-solid fa-circle text-success me-1"></i> AI Online
+        </span>
     </div>
 
-    <div class="main-content">
-        <h3 class="fw-bold mb-4">🤖 AI Freshness Assistant</h3>
-
-        <div class="card card-custom p-4" style="max-width: 700px; margin: 0 auto;">
-            <div class="chat-box mb-3" id="chatContainer">
-                <div class="msg-bubble bot-msg">
-                    👋 Hello! I am your AI Freshness Assistant. Ask me anything about food storage or shelf life!
+    <!-- Chat Card -->
+    <div class="card card-custom p-0 overflow-hidden chat-container d-flex flex-column">
+        <!-- Messages Area -->
+        <div class="card-body overflow-auto p-4 d-flex flex-column gap-3 chat-box flex-grow-1" id="chat-box">
+            
+            <!-- Bot Initial Message -->
+            <div class="d-flex align-items-start gap-2">
+                <div class="avatar-icon bg-success text-white">
+                    <i class="fa-solid fa-robot"></i>
+                </div>
+                <div class="msg-bubble-bot p-3 shadow-sm max-w-75">
+                    <p class="mb-0 small text-dark">
+                        नमस्कार! मी तुमचा <strong>AI Food Assistant</strong> आहे. अन्न साठवणूक, ताजेपणा टिकवणे किंवा Expiry बद्दल काहीही प्रश्न विचारा! 🥦🍎
+                    </p>
                 </div>
             </div>
 
-            <div class="input-group">
-                <input type="text" id="userInput" class="form-control p-2" placeholder="Ask about Milk, Bread, Apple..." onkeypress="handleKeyPress(event)">
-                <button class="btn btn-green px-4" onclick="sendMessage()">Send 🚀</button>
-            </div>
+        </div>
+
+        <!-- Input Form -->
+        <div class="card-footer bg-white border-top p-3">
+            <form id="chat-form" onsubmit="sendMessage(event)">
+                <div class="input-group">
+                    <input type="text" id="user-input" class="form-control rounded-pill-start px-3" placeholder="Type your food question here..." required>
+                    <button type="submit" class="btn btn-success rounded-pill-end px-4">
+                        <i class="fa-solid fa-paper-plane me-1"></i> Send
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
+</div>
 
-    <script>
-        async function sendMessage() {
-            const input = document.getElementById('userInput');
-            const message = input.value.trim();
-            if (!message) return;
+<script>
+    function sendMessage(event) {
+        event.preventDefault();
+        let inputField = document.getElementById('user-input');
+        let messageText = inputField.value.trim();
+        let chatBox = document.getElementById('chat-box');
 
-            const chatContainer = document.getElementById('chatContainer');
+        if (messageText === "") return;
 
-            // Show User Message
-            chatContainer.innerHTML += `<div class="msg-bubble user-msg">${message}</div>`;
-            input.value = '';
-            chatContainer.scrollTop = chatContainer.scrollHeight;
+        // 1. Add User Message
+        let userMessageHTML = `
+            <div class="d-flex align-items-start gap-2 justify-content-end">
+                <div class="msg-bubble-user p-3 shadow-sm">
+                    <p class="mb-0 small">${escapeHtml(messageText)}</p>
+                </div>
+                <div class="avatar-icon bg-secondary text-white">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+            </div>
+        `;
+        chatBox.insertAdjacentHTML('beforeend', userMessageHTML);
+        inputField.value = "";
+        chatBox.scrollTop = chatBox.scrollHeight;
 
-            // Fetch Bot Response from app.py API
-            try {
-                const response = await fetch('/api/chat', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ message: message })
-                });
-                const data = await response.json();
+        // 2. Add Bot Response
+        setTimeout(() => {
+            let botReply = getBotResponse(messageText);
+            let botMessageHTML = `
+                <div class="d-flex align-items-start gap-2">
+                    <div class="avatar-icon bg-success text-white">
+                        <i class="fa-solid fa-robot"></i>
+                    </div>
+                    <div class="msg-bubble-bot p-3 shadow-sm">
+                        <p class="mb-0 small text-dark">${botReply}</p>
+                    </div>
+                </div>
+            `;
+            chatBox.insertAdjacentHTML('beforeend', botMessageHTML);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }, 500);
+    }
 
-                // Show Bot Reply
-                chatContainer.innerHTML += `<div class="msg-bubble bot-msg">${data.response}</div>`;
-                chatContainer.scrollTop = chatContainer.scrollHeight;
-            } catch (err) {
-                chatContainer.innerHTML += `<div class="msg-bubble bot-msg text-danger">Error connecting to AI Server.</div>`;
-            }
+    function getBotResponse(input) {
+        let text = input.toLowerCase();
+        if (text.includes("milk") || text.includes("दूध")) {
+            return "दूध उकळून थंड झाल्यानंतर ५°C पेक्षा कमी तापमानावर फ्रीजमध्ये ठेवल्यास ३ ते ४ दिवस चांगले राहते.";
+        } else if (text.includes("tomato") || text.includes("टोमॅटो")) {
+            return "टोमॅटो जास्त दिवस टिकवण्यासाठी ते रूम टेम्परेचरवर उघड्या हवेत ठेवा. फ्रीजमध्ये ठेवल्यास त्यांची चव बदलू शकते.";
+        } else if (text.includes("hello") || text.includes("hi")) {
+            return "Hello! मका किंवा इतर भाज्यांच्या स्टोरेजबाबत काही मदत हवी आहे का?";
+        } else {
+            return "उत्तम ताजेपणासाठी अन्नपदार्थ नेहमी कोरड्या, हवाबंद डब्यात आणि योग्य तापमानात ठेवावेत.";
         }
+    }
 
-        function handleKeyPress(e) {
-            if (e.key === 'Enter') sendMessage();
-        }
-    </script>
+    function escapeHtml(text) {
+        return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+</script>
+
+<!-- Bootstrap 5 JS Bundle CDN -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
