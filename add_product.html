@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Product - AI Shelf Life Predictor</title>
-    <!-- Bootstrap 5 CSS CDN -->
+    <!-- Bootstrap 5 CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome Icons -->
+    <!-- Font Awesome CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         body {
-            background-color: #f8fafc;
+            background-color: #f1f5f9;
             font-family: 'Segoe UI', system-ui, sans-serif;
             margin: 0;
             padding: 0;
@@ -46,12 +46,12 @@
             margin-bottom: 6px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             font-weight: 500;
             transition: all 0.2s;
         }
         .sidebar a:hover, .sidebar a.active {
-            background: #334155;
+            background: #10b981;
             color: #ffffff;
         }
         .main-content {
@@ -69,7 +69,6 @@
 </head>
 <body>
 
-    <!-- Sidebar Navigation -->
     <div class="sidebar">
         <a href="{{ url_for('dashboard') }}" class="sidebar-brand">🥦 AI Shelf Life</a>
         <a href="{{ url_for('dashboard') }}"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
@@ -82,7 +81,6 @@
         <a href="{{ url_for('admin') }}"><i class="fa-solid fa-gear"></i> Admin</a>
     </div>
 
-    <!-- Main Content Area -->
     <div class="main-content">
         <h3 class="fw-bold text-dark mb-1">Add Product</h3>
         <p class="text-muted small mb-4">Enter product details to calculate and monitor shelf life.</p>
@@ -91,7 +89,7 @@
             <form action="{{ url_for('add_product') }}" method="POST">
                 <div class="mb-3">
                     <label class="form-label fw-semibold text-dark">Product Name</label>
-                    <input type="text" name="product_name" class="form-control" placeholder="e.g. Milk, Bread, Apple" required>
+                    <input type="text" name="product_name" class="form-control" placeholder="e.g. Fresh Milk, Bread" required>
                 </div>
 
                 <div class="mb-3">
@@ -115,14 +113,13 @@
                     <input type="date" name="expiry_date" class="form-control" required>
                 </div>
 
-                <button type="submit" class="btn btn-success w-100 py-2 fw-semibold" style="background-color: #0d9488; border: none;">
+                <button type="submit" class="btn btn-success w-100 py-2 fw-semibold" style="background-color: #10b981; border: none;">
                     Save Product
                 </button>
             </form>
         </div>
     </div>
 
-    <!-- Bootstrap 5 JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
