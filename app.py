@@ -1,29 +1,12 @@
 import os
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
-import firebase_admin
-from firebase_admin import credentials, firestore
+from flask import Flask, render_template, request, redirect, url_for, flash
 
-# Template folder 'templates' ठेवून सर्व HTML फाईल्स लोड केल्या जातील
-app = Flask(__name__, template_folder='templates')
+# Flask app initialization with proper paths
+app = Flask(__name__, template_folder='templates', static_folder='static')
 app.secret_key = "aishelflifesupersecretkey"
 
-# ==================== FIREBASE SETUP ====================
-db = None
-try:
-    if os.path.exists('serviceAccountKey.json') and not firebase_admin._apps:
-        cred = credentials.Certificate('serviceAccountKey.json')
-        firebase_admin.initialize_app(cred)
-        db = firestore.client()
-        print("✅ Firebase Connected Successfully!")
-    else:
-        print("⚠️ Warning: serviceAccountKey.json missing! Local demo mode running.")
-except Exception as e:
-    print(f"⚠️ Firebase Connection Error: {e}")
-
-# मॅन्युअल डेटा स्टोअर करण्यासाठी तात्पुरती लिस्ट
+# In-Memory Product List
 products_db = []
-
-# ==================== ROUTES ====================
 
 @app.route('/')
 def index():
@@ -62,7 +45,6 @@ def add_product():
             'expiry_date': expiry_date,
             'status': 'Fresh'
         })
-
         flash("Product Added Successfully!", "success")
         return redirect(url_for('product_list'))
     return render_template('add_product.html')
@@ -96,7 +78,6 @@ def profile():
     user = {"name": "Vaibhavi Yadav", "email": "vaibhavi@gmail.com", "mobile": "9876543210"}
     return render_template('profile.html', user=user)
 
-# Admin Route जोडला आहे ज्यामुळे 500 Internal Server Error येणार नाही
 @app.route('/admin')
 def admin():
     return redirect(url_for('dashboard'))
