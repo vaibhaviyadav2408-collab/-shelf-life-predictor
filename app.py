@@ -27,10 +27,9 @@ sample_products = [
 ]
 
 # ==================== ROUTES ====================
-
 @app.route('/')
 def index():
-    return render_template('dashboard.html', total=24, fresh=16, expiring=5, expired=3)
+    return render_template('index.html')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
