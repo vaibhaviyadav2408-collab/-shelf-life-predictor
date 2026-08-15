@@ -39,6 +39,11 @@ def login():
         return redirect(url_for('dashboard'))
     return render_template('login.html')
 
+@app.route('/logout')
+def logout():
+    flash("You have been logged out.", "info")
+    return redirect(url_for('login'))
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
@@ -51,6 +56,7 @@ def dashboard():
     return render_template('dashboard.html', total=24, fresh=16, expiring=5, expired=3)
 
 @app.route('/add-product', methods=['GET', 'POST'])
+@app.route('/add_product', methods=['GET', 'POST'])
 def add_product():
     if request.method == 'POST':
         flash("Product Added Successfully!", "success")
@@ -58,10 +64,12 @@ def add_product():
     return render_template('add_product.html')
 
 @app.route('/product-list')
+@app.route('/product_list')
 def product_list():
     return render_template('product_list.html', products=sample_products)
 
 @app.route('/ai-prediction', methods=['GET', 'POST'])
+@app.route('/ai_prediction', methods=['GET', 'POST'])
 def ai_prediction():
     result = None
     if request.method == 'POST':
@@ -82,7 +90,6 @@ def profile():
     user = {"name": "Demo User", "email": "user@example.com", "mobile": "9876543210"}
     return render_template('profile.html', user=user)
 
-# FIX: Added Missing 'admin' Route to Stop BuildError 500
 @app.route('/admin')
 def admin():
     return redirect(url_for('dashboard'))
