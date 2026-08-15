@@ -3,11 +3,11 @@ from flask import Flask, render_template, request, redirect, url_for, flash, jso
 import firebase_admin
 from firebase_admin import credentials, firestore
 
-# Template folder '.' केल्यामुळे रूट डिरेक्टरीतील सर्व HTML फाईल्स योग्य रीतीने लोड होतील
+# Template folder 'templates' ठेवून सर्व HTML फाईल्स लोड केल्या जातील
 app = Flask(__name__, template_folder='templates')
 app.secret_key = "aishelflifesupersecretkey"
 
-# ==================== FIREBASE SETUP (SAFE FOR LOCALHOST & DEPLOYMENT) ====================
+# ==================== FIREBASE SETUP ====================
 db = None
 try:
     if os.path.exists('serviceAccountKey.json') and not firebase_admin._apps:
@@ -16,29 +16,12 @@ try:
         db = firestore.client()
         print("✅ Firebase Connected Successfully!")
     else:
-        print("⚠️ Warning: serviceAccountKey.json missing! Running with dynamic memory database.")
+        print("⚠️ Warning: serviceAccountKey.json missing! Local demo mode running.")
 except Exception as e:
     print(f"⚠️ Firebase Connection Error: {e}")
 
-# मॅन्युअल डेटा स्टोअर करण्यासाठी तात्पुरती (In-Memory) लिस्ट
-products_db = [
-    {
-        'name': 'Fresh Organic Milk',
-        'category': 'Dairy & Eggs',
-        'quantity': '1 Liter',
-        'purchase_date': '2026-08-10',
-        'expiry_date': '2026-08-17',
-        'status': 'Fresh'
-    },
-    {
-        'name': 'Whole Wheat Bread',
-        'category': 'Bakery',
-        'quantity': '1 Packet',
-        'purchase_date': '2026-08-12',
-        'expiry_date': '2026-08-16',
-        'status': 'Expiring Soon'
-    }
-]
+# मॅन्युअल डेटा स्टोअर करण्यासाठी तात्पुरती लिस्ट
+products_db = []
 
 # ==================== ROUTES ====================
 
@@ -62,37 +45,26 @@ def register():
 
 @app.route('/dashboard')
 def dashboard():
-    total = len(products_db)
-    fresh = sum(1 for item in products_db if item.get('status') == 'Fresh')
-    expiring = sum(1 for item in products_db if item.get('status') == 'Expiring Soon')
-    expired = sum(1 for item in products_db if item.get('status') == 'Expired')
-    
-    return render_template('dashboard.html', total=total, fresh=fresh, expiring=expiring, expired=expired)
+    return render_template('dashboard.html', total=24, fresh=16, expiring=5, expired=3)
 
 @app.route('/add-product', methods=['GET', 'POST'])
 def add_product():
     if request.method == 'POST':
-        # फॉर्ममधून आलेला डेटा गोळा करणे
-        name = request.form.get('product_name')
+        product_name = request.form.get('product_name')
         category = request.form.get('category')
-        quantity = request.form.get('quantity')
-        purchase_date = request.form.get('purchase_date')
+        mfg_date = request.form.get('mfg_date')
         expiry_date = request.form.get('expiry_date')
 
-        # प्रॉडक्ट लिस्टमध्ये ॲड करणे
-        new_item = {
-            'name': name,
+        products_db.append({
+            'name': product_name,
             'category': category,
-            'quantity': quantity,
-            'purchase_date': purchase_date,
+            'mfg_date': mfg_date,
             'expiry_date': expiry_date,
             'status': 'Fresh'
-        }
-        products_db.append(new_item)
+        })
 
         flash("Product Added Successfully!", "success")
         return redirect(url_for('product_list'))
-    
     return render_template('add_product.html')
 
 @app.route('/product-list')
@@ -103,22 +75,11 @@ def product_list():
 def ai_prediction():
     result = None
     if request.method == 'POST':
-        item_name = request.form.get('item_name', 'Sample Food Item')
-        temp = request.form.get('temperature', 4)
-        pkg = request.form.get('packaging', 'Sealed Container')
-        
-        # साधे AI कॅल्क्युलेशन लॉजिक
-        days = 5
-        if int(temp) > 10:
-            days = 2
-        elif pkg == 'Refrigerated Vacuum Bag':
-            days = 10
-
         result = {
-            "name": item_name,
-            "days": days,
+            "name": "Sample Food Item",
+            "days": 4,
             "status": "Fresh",
-            "suggestion": f"Stored at {temp}°C in {pkg}. Recommended to use within {days} days."
+            "suggestion": "Keep refrigerated below 4°C."
         }
     return render_template('ai_prediction.html', result=result)
 
@@ -130,20 +91,15 @@ def chatbot():
 def notifications():
     return render_template('notifications.html')
 
-@app.route('/profile', methods=['GET', 'POST'])
+@app.route('/profile')
 def profile():
-    user = {
-        "name": "Vaibhavi Yadav",
-        "email": "vaibhavi@kbppolytechnic.ac.in",
-        "college": "KBP Polytechnic, Satara",
-        "project": "2026 Inplant Training Project"
-    }
+    user = {"name": "Vaibhavi Yadav", "email": "vaibhavi@gmail.com", "mobile": "9876543210"}
     return render_template('profile.html', user=user)
 
-@app.route('/logout')
-def logout():
-    flash("Logged out successfully!", "info")
-    return redirect(url_for('index'))
+# Admin Route जोडला आहे ज्यामुळे 500 Internal Server Error येणार नाही
+@app.route('/admin')
+def admin():
+    return redirect(url_for('dashboard'))
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=5000, debug=True)
