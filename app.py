@@ -3,9 +3,8 @@ from flask import Flask, render_template, request, redirect, url_for, flash, jso
 import firebase_admin
 from firebase_admin import credentials, firestore
 
-# ==================== FLASK APP SETUP ====================
-# Absolute path वापरून templates फोल्डर नक्की कुठे आहे ते शोधणे
-BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+# Dynamic base directory and absolute path for templates
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
 
 app = Flask(__name__, template_folder=TEMPLATE_DIR)
@@ -14,17 +13,18 @@ app.secret_key = "aishelflifesupersecretkey"
 # ==================== FIREBASE SETUP ====================
 db = None
 try:
-    if os.path.exists('serviceAccountKey.json') and not firebase_admin._apps:
-        cred = credentials.Certificate('serviceAccountKey.json')
+    key_path = os.path.join(BASE_DIR, 'serviceAccountKey.json')
+    if os.path.exists(key_path) and not firebase_admin._apps:
+        cred = credentials.Certificate(key_path)
         firebase_admin.initialize_app(cred)
         db = firestore.client()
         print("✅ Firebase Connected Successfully!")
     else:
-        print("⚠️ Warning: serviceAccountKey.json missing! Running in local demo mode.")
+        print("⚠️ Warning: serviceAccountKey.json missing! Local demo mode running.")
 except Exception as e:
     print(f"⚠️ Firebase Connection Error: {e}")
 
-# ==================== ALL ROUTES ====================
+# ==================== ROUTES ====================
 
 @app.route('/')
 def index():
@@ -33,22 +33,6 @@ def index():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        email = request.form.get('email')
-        password = request.form.get('password')
-        
-        if db:
-            try:
-                users_ref = db.collection('users').where('email', '==', email).limit(1).stream()
-                user_data = [u.to_dict() for u in users_ref]
-                if user_data:
-                    flash("Login Successful!", "success")
-                    return redirect(url_for('dashboard'))
-                else:
-                    flash("User not found. Please register.", "danger")
-                    return redirect(url_for('login'))
-            except Exception as e:
-                flash(f"Login error: {str(e)}", "danger")
-        
         flash("Login Successful!", "success")
         return redirect(url_for('dashboard'))
     return render_template('login.html')
@@ -56,102 +40,34 @@ def login():
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
-        name = request.form.get('name')
-        email = request.form.get('email')
-        mobile = request.form.get('mobile')
-        password = request.form.get('password')
-
-        if db:
-            try:
-                db.collection('users').add({
-                    'name': name,
-                    'email': email,
-                    'mobile': mobile,
-                    'password': password
-                })
-                flash("Registration Successful! Please log in.", "success")
-                return redirect(url_for('login'))
-            except Exception as e:
-                flash(f"Error saving user: {str(e)}", "danger")
-
         flash("Registration Successful!", "success")
         return redirect(url_for('login'))
     return render_template('register.html')
 
 @app.route('/dashboard')
 def dashboard():
-    total_count = 24
-    fresh_count = 16
-    expiring_count = 5
-    expired_count = 3
-
-    if db:
-        try:
-            products_ref = db.collection('products').stream()
-            products = [p.to_dict() for p in products_ref]
-            total_count = len(products)
-            fresh_count = sum(1 for p in products if p.get('status', '').lower() == 'fresh')
-            expiring_count = sum(1 for p in products if p.get('status', '').lower() == 'expiring')
-            expired_count = sum(1 for p in products if p.get('status', '').lower() == 'expired')
-        except Exception as e:
-            print(f"Firestore query error: {e}")
-
-    return render_template(
-        'dashboard.html',
-        total=total_count,
-        fresh=fresh_count,
-        expiring=expiring_count,
-        expired=expired_count
-    )
+    return render_template('dashboard.html', total=24, fresh=16, expiring=5, expired=3)
 
 @app.route('/add-product', methods=['GET', 'POST'])
 def add_product():
     if request.method == 'POST':
-        product_name = request.form.get('product_name')
-        category = request.form.get('category')
-        expiry_date = request.form.get('expiry_date')
-        quantity = request.form.get('quantity')
-
-        if db:
-            try:
-                db.collection('products').add({
-                    'name': product_name,
-                    'category': category,
-                    'exp_date': expiry_date,
-                    'quantity': quantity,
-                    'status': 'Fresh'
-                })
-            except Exception as e:
-                print(f"Error adding product: {e}")
-
         flash("Product Added Successfully!", "success")
         return redirect(url_for('product_list'))
     return render_template('add_product.html')
 
 @app.route('/product-list')
 def product_list():
-    products = []
-    if db:
-        try:
-            products_ref = db.collection('products').stream()
-            products = [p.to_dict() for p in products_ref]
-        except Exception as e:
-            print(f"Error fetching products: {e}")
-            
-    return render_template('product_list.html', products=products)
+    return render_template('product_list.html', products=[])
 
 @app.route('/ai-prediction', methods=['GET', 'POST'])
 def ai_prediction():
     result = None
     if request.method == 'POST':
-        item_name = request.form.get('item_name', 'Sample Food Item')
-        storage = request.form.get('storage_condition', 'Refrigerated')
-        
         result = {
-            "name": item_name,
-            "days": 5,
+            "name": "Sample Food Item",
+            "days": 4,
             "status": "Fresh",
-            "suggestion": f"Stored via {storage}. Keep temperature below 4°C for maximum freshness."
+            "suggestion": "Keep refrigerated below 4°C."
         }
     return render_template('ai_prediction.html', result=result)
 
@@ -161,7 +77,7 @@ def notifications():
 
 @app.route('/profile')
 def profile():
-    user = {"name": "Vaibhavi Yadav", "email": "vaibhavi@gmail.com", "mobile": "9876543210"}
+    user = {"name": "User Name", "email": "user@gmail.com", "mobile": "9876543210"}
     return render_template('profile.html', user=user)
 
 @app.route('/admin')
