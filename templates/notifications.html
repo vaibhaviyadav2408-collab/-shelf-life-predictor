@@ -1,23 +1,130 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Notifications</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifications - AI Shelf Life</title>
+    <!-- Google Fonts & Font Awesome Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .notification-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 16px 20px;
+            background: #ffffff;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .notification-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.04);
+        }
+        .notification-card.warning-item {
+            border-left: 5px solid #f59e0b;
+            background: #fffbeb;
+        }
+        .notification-card.info-item {
+            border-left: 5px solid #0b8bf5;
+            background: #f0f9ff;
+        }
+        .notification-card.danger-item {
+            border-left: 5px solid #ef4444;
+            background: #fef2f2;
+        }
+        .icon-badge {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+    </style>
 </head>
 <body>
+
+    <!-- Sidebar Navigation -->
     <div class="sidebar">
-        <h5 class="text-center mb-4">🥦 AI Shelf Life</h5>
-        <a href="{{ url_for('dashboard') }}">📊 Dashboard</a>
-        <a href="{{ url_for('notifications') }}" class="active">🔔 Notifications</a>
+        <div class="sidebar-brand">
+            <i class="fa-solid fa-leaf text-success me-2"></i>AI Shelf Life
+        </div>
+        <a href="{{ url_for('dashboard') }}"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
+        <a href="{{ url_for('add_product') }}"><i class="fa-solid fa-plus-circle"></i> Add Product</a>
+        <a href="{{ url_for('product_list') }}"><i class="fa-solid fa-boxes-stacked"></i> Product List</a>
+        <a href="{{ url_for('ai_prediction') }}"><i class="fa-solid fa-robot"></i> AI Prediction</a>
+        <a href="{{ url_for('notifications') }}" class="active"><i class="fa-solid fa-bell"></i> Notifications</a>
+        <a href="{{ url_for('profile') }}"><i class="fa-solid fa-user"></i> Profile</a>
+        <hr class="mx-3 text-muted opacity-25">
+        <a href="{{ url_for('index') }}" class="text-danger fw-semibold"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
     </div>
+
+    <!-- Main Content Area -->
     <div class="main-content">
-        <h3>Notifications</h3>
-        <div class="list-group mt-3">
-            <div class="list-group-item list-group-item-warning">⚠️ <strong>Milk</strong> is expiring tomorrow!</div>
-            <div class="list-group-item list-group-item-info">ℹ️ <strong>Bread</strong> is expiring in 2 days.</div>
-            <div class="list-group-item list-group-item-danger">❌ <strong>Apple</strong> is expired!</div>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h3 class="fw-bold mb-1">🔔 Expiry Notifications</h3>
+                <p class="text-muted mb-0">Stay updated on items needing immediate attention.</p>
+            </div>
+            <button class="btn btn-sm btn-outline-secondary rounded-pill px-3">
+                <i class="fa-solid fa-check-double me-1"></i> Mark All as Read
+            </button>
+        </div>
+
+        <div class="card card-custom p-4">
+            <!-- Warning Notification -->
+            <div class="notification-card warning-item">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="icon-badge bg-warning bg-opacity-20 text-warning">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                    </div>
+                    <div>
+                        <h6 class="fw-bold mb-0 text-dark">Milk is expiring tomorrow!</h6>
+                        <small class="text-muted">Item category: Dairy • Added 5 days ago</small>
+                    </div>
+                </div>
+                <span class="badge bg-warning text-dark rounded-pill px-3 py-2 fw-semibold">Urgent</span>
+            </div>
+
+            <!-- Info Notification -->
+            <div class="notification-card info-item">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="icon-badge bg-primary bg-opacity-20 text-primary">
+                        <i class="fa-solid fa-clock"></i>
+                    </div>
+                    <div>
+                        <h6 class="fw-bold mb-0 text-dark">Bread is expiring in 2 days.</h6>
+                        <small class="text-muted">Item category: Bakery • Added 3 days ago</small>
+                    </div>
+                </div>
+                <span class="badge bg-primary text-white rounded-pill px-3 py-2 fw-semibold">Upcoming</span>
+            </div>
+
+            <!-- Danger Notification -->
+            <div class="notification-card danger-item">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="icon-badge bg-danger bg-opacity-20 text-danger">
+                        <i class="fa-solid fa-circle-xmark"></i>
+                    </div>
+                    <div>
+                        <h6 class="fw-bold mb-0 text-dark">Apple has expired!</h6>
+                        <small class="text-muted">Item category: Fruits • Expired yesterday</small>
+                    </div>
+                </div>
+                <span class="badge bg-danger text-white rounded-pill px-3 py-2 fw-semibold">Expired</span>
+            </div>
         </div>
     </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
