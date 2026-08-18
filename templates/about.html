@@ -11,51 +11,100 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body {
+            background-color: #f8fafc;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: #0f172a;
+        }
+        .about-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 20px;
+            background: #ffffff;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+        }
+        .feature-icon-box {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            background: #ecfdf5;
+            color: #10b981;
+        }
+        .dev-badge {
+            background: #f1f5f9;
+            border-radius: 14px;
+            padding: 16px;
+            border: 1px solid #e2e8f0;
+        }
+    </style>
 </head>
-<body class="bg-light">
+<body class="p-3 p-md-5">
 
-    <div class="container d-flex justify-content-center align-items-center min-vh-100 py-4">
-        <div class="card shadow-lg border-0 rounded-4 p-4 p-md-5 bg-white" style="max-width: 650px; width: 100%;">
+    <div class="container" style="max-width: 800px;">
+        <div class="about-card p-4 p-md-5">
             
-            <!-- Header Section -->
-            <div class="text-center mb-4">
-                <div class="d-inline-flex align-items-center justify-content-center bg-success-subtle text-success rounded-circle mb-3" style="width: 70px; height: 70px;">
-                    <i class="fa-solid fa-leaf fa-2x"></i>
+            <!-- Header -->
+            <div class="d-flex align-items-center gap-3 mb-4">
+                <div class="feature-icon-box fs-3 p-3">
+                    <i class="fa-solid fa-leaf"></i>
                 </div>
-                <h2 class="fw-bold text-dark">About Project</h2>
-                <p class="text-muted small">AI-Powered Food Waste Reduction System</p>
+                <div>
+                    <h3 class="fw-bold mb-0">ℹ️ About the Project</h3>
+                    <p class="text-muted mb-0">AI Shelf Life Predictor</p>
+                </div>
             </div>
 
-            <hr class="my-3 opacity-25">
+            <!-- Description -->
+            <p class="fs-6 text-secondary leading-relaxed mb-4">
+                हा प्रोजेक्ट <strong>AI (Artificial Intelligence)</strong> आणि <strong>Flask Framework</strong> चा वापर करून अन्नाची होणारी नासाडी रोखण्यासाठी (Food Waste Management) तयार करण्यात आला आहे. यामध्ये AI तंत्रज्ञानाद्वारे अन्नाचे शेल्फ लाईफ भाकीत करून वापरकर्त्याला वेळेवर सूचना दिल्या जातात[cite: 11].
+            </p>
 
-            <!-- Content Section -->
-            <div class="my-4">
-                <p class="fs-6 text-secondary leading-relaxed">
-                    हा प्रोजेक्ट **AI** आणि **Flask** चा वापर करून अन्नाची नासाडी रोखण्यासाठी आणि अन्नपदार्थांचे शेल्फ-लाईफ अचूकपणे ट्रॅक करण्यासाठी तयार करण्यात आला आहे.
-                </p>
+            <hr class="my-4 border-secondary opacity-25">
 
-                <!-- Features Highlight List -->
-                <div class="mt-4">
-                    <h6 class="fw-bold text-dark mb-3"><i class="fa-solid fa-star text-warning me-2"></i>मुख्य वैशिष्ट्ये:</h6>
-                    <ul class="list-unstyled text-secondary">
-                        <li class="mb-2 d-flex align-items-center">
-                            <i class="fa-solid fa-circle-check text-success me-2"></i> AI आधारित शेल्फ-लाईफ अंदाज
-                        </li>
-                        <li class="mb-2 d-flex align-items-center">
-                            <i class="fa-solid fa-circle-check text-success me-2"></i> एक्सपायरी अलर्ट आणि नोटिफिकेशन्स
-                        </li>
-                        <li class="mb-2 d-flex align-items-center">
-                            <i class="fa-solid fa-circle-check text-success me-2"></i> सोपे आणि सुटसुटीत इनव्हेंटरी व्यवस्थापन
-                        </li>
-                    </ul>
+            <!-- Key Features -->
+            <h5 class="fw-bold mb-3"><i class="fa-solid fa-star text-warning me-2"></i>मुख्य वैशिष्ट्ये (Key Features):</h5>
+            <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                    <div class="d-flex align-items-center gap-3 p-3 rounded-3 border bg-light">
+                        <i class="fa-solid fa-robot text-success fs-4"></i>
+                        <div>
+                            <h6 class="fw-bold mb-0">AI Shelf Prediction</h6>
+                            <small class="text-muted">अन्नाची गुणवत्ता व टिकण्याची क्षमता ओळखणे[cite: 11].</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="d-flex align-items-center gap-3 p-3 rounded-3 border bg-light">
+                        <i class="fa-solid fa-bell text-warning fs-4"></i>
+                        <div>
+                            <h6 class="fw-bold mb-0">Smart Alerts</h6>
+                            <small class="text-muted">पदार्थ खराब होण्यापूर्वी मिळणाऱ्या नोटिफिकेशन्स[cite: 11].</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Developer Info -->
+            <div class="dev-badge mb-4">
+                <h6 class="fw-bold text-dark mb-2"><i class="fa-solid fa-code me-2 text-primary"></i>Project Information</h6>
+                <div class="row g-2 text-secondary small">
+                    <div class="col-sm-6"><strong>Developed By:</strong> Vaibhavi Yadav[cite: 10]</div>
+                    <div class="col-sm-6"><strong>College:</strong> KBP Polytechnic, Satara[cite: 10]</div>
+                    <div class="col-sm-6"><strong>Project Type:</strong> 2026 Implant Training[cite: 10]</div>
+                    <div class="col-sm-6"><strong>Tech Stack:</strong> Python, Flask, Bootstrap 5, AI/ML[cite: 11]</div>
                 </div>
             </div>
 
             <!-- Action Button -->
-            <div class="mt-4 text-center">
-                <a href="{{ url_for('dashboard') }}" class="btn btn-success px-4 py-2 rounded-3 fw-semibold shadow-sm">
-                    <i class="fa-solid fa-arrow-left me-2"></i>Back to Dashboard
+            <div class="d-flex justify-content-between align-items-center pt-2">
+                <a href="{{ url_for('dashboard') }}" class="btn btn-secondary px-4 rounded-pill">
+                    <i class="fa-solid fa-arrow-left me-1"></i> Back to Dashboard[cite: 11]
                 </a>
+                <span class="text-muted small">© 2026 AI Shelf Life Predictor[cite: 10]</span>
             </div>
 
         </div>
