@@ -3,7 +3,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash, jso
 import firebase_admin
 from firebase_admin import credentials, firestore
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='.')
 app.secret_key = "aishelflifesupersecretkey"
 
 # ==================== FIREBASE SETUP ====================
