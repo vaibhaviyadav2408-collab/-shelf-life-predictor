@@ -3,7 +3,12 @@ from flask import Flask, render_template, request, redirect, url_for, flash, jso
 import firebase_admin
 from firebase_admin import credentials, firestore
 
-app = Flask(__name__, template_folder='templates')
+# ==================== FLASK APP SETUP ====================
+# Absolute path वापरून templates फोल्डर नक्की कुठे आहे ते शोधणे
+BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
+
+app = Flask(__name__, template_folder=TEMPLATE_DIR)
 app.secret_key = "aishelflifesupersecretkey"
 
 # ==================== FIREBASE SETUP ====================
@@ -19,7 +24,7 @@ try:
 except Exception as e:
     print(f"⚠️ Firebase Connection Error: {e}")
 
-# ==================== ROUTES ====================
+# ==================== ALL ROUTES ====================
 
 @app.route('/')
 def index():
@@ -75,28 +80,21 @@ def register():
 
 @app.route('/dashboard')
 def dashboard():
-    total_count = 0
-    fresh_count = 0
-    expiring_count = 0
-    expired_count = 0
+    total_count = 24
+    fresh_count = 16
+    expiring_count = 5
+    expired_count = 3
 
     if db:
         try:
             products_ref = db.collection('products').stream()
             products = [p.to_dict() for p in products_ref]
             total_count = len(products)
-            for p in products:
-                status = p.get('status', '').lower()
-                if status == 'fresh':
-                    fresh_count += 1
-                elif status == 'expiring':
-                    expiring_count += 1
-                elif status == 'expired':
-                    expired_count += 1
+            fresh_count = sum(1 for p in products if p.get('status', '').lower() == 'fresh')
+            expiring_count = sum(1 for p in products if p.get('status', '').lower() == 'expiring')
+            expired_count = sum(1 for p in products if p.get('status', '').lower() == 'expired')
         except Exception as e:
             print(f"Firestore query error: {e}")
-    else:
-        total_count, fresh_count, expiring_count, expired_count = 24, 16, 5, 3
 
     return render_template(
         'dashboard.html',
@@ -119,12 +117,12 @@ def add_product():
                 db.collection('products').add({
                     'name': product_name,
                     'category': category,
-                    'expiry_date': expiry_date,
+                    'exp_date': expiry_date,
                     'quantity': quantity,
                     'status': 'Fresh'
                 })
             except Exception as e:
-                print(f"Error adding product to Firestore: {e}")
+                print(f"Error adding product: {e}")
 
         flash("Product Added Successfully!", "success")
         return redirect(url_for('product_list'))
@@ -169,6 +167,18 @@ def profile():
 @app.route('/admin')
 def admin():
     return render_template('admin.html')
+
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
+@app.route('/history')
+def history():
+    return render_template('history.html')
+
+@app.route('/chatbot')
+def chatbot():
+    return render_template('chatbot.html')
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=5000, debug=True)
