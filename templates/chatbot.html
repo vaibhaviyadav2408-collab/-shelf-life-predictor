@@ -4,70 +4,141 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Assistant - AI Shelf Life</title>
+    <!-- Google Fonts & Font Awesome Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <style>
-        .chat-box {
-            height: 400px;
-            overflow-y: auto;
+        .chat-card {
             border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            padding: 15px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
             background: #ffffff;
         }
+        .chat-header {
+            background: linear-gradient(135deg, #047857 0%, #10b981 100%);
+            color: #ffffff;
+            padding: 18px 24px;
+        }
+        .chat-box {
+            height: 420px;
+            overflow-y: auto;
+            padding: 24px;
+            background: #f8fafc;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
         .msg-bubble {
-            max-width: 75%;
-            padding: 10px 15px;
-            border-radius: 15px;
-            margin-bottom: 10px;
+            max-width: 78%;
+            padding: 12px 18px;
+            border-radius: 18px;
             font-size: 0.95rem;
+            line-height: 1.5;
+            word-wrap: break-word;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
         }
         .user-msg {
-            background-color: #1d7a3e;
-            color: white;
-            margin-left: auto;
-            border-bottom-right-radius: 2px;
+            background-color: #10b981;
+            color: #ffffff;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
         }
         .bot-msg {
-            background-color: #f1f5f9;
-            color: #1e293b;
-            margin-right: auto;
-            border-bottom-left-radius: 2px;
+            background-color: #ffffff;
+            color: #0f172a;
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+            border: 1px solid #e2e8f0;
+        }
+        .suggestion-pill {
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            color: #334155;
+            border-radius: 20px;
+            padding: 6px 14px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .suggestion-pill:hover {
+            background: #ecfdf5;
+            border-color: #10b981;
+            color: #047857;
         }
     </style>
 </head>
 <body>
 
+    <!-- Sidebar Navigation -->
     <div class="sidebar">
-        <div class="sidebar-brand">🥦 AI Shelf Life <br><small class="text-muted fw-normal" style="font-size:0.75rem;">Predictor</small></div>
-        <a href="{{ url_for('dashboard') }}">📊 Dashboard</a>
-        <a href="{{ url_for('add_product') }}">➕ Add Product</a>
-        <a href="{{ url_for('product_list') }}">📋 Product List</a>
-        <a href="{{ url_for('ai_prediction') }}">🤖 AI Prediction</a>
-        <a href="{{ url_for('chatbot') }}" class="active">💬 AI Chatbot</a>
-        <a href="{{ url_for('notifications') }}">🔔 Notifications</a>
-        <a href="{{ url_for('profile') }}">👤 Profile</a>
-        <hr class="mx-3 text-muted">
-        <a href="{{ url_for('index') }}" class="text-danger">🚪 Logout</a>
+        <div class="sidebar-brand">
+            <i class="fa-solid fa-leaf text-success me-2"></i>AI Shelf Life
+        </div>
+        <a href="{{ url_for('dashboard') }}"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
+        <a href="{{ url_for('add_product') }}"><i class="fa-solid fa-plus-circle"></i> Add Product</a>
+        <a href="{{ url_for('product_list') }}"><i class="fa-solid fa-boxes-stacked"></i> Product List</a>
+        <a href="{{ url_for('ai_prediction') }}"><i class="fa-solid fa-robot"></i> AI Prediction</a>
+        <a href="{{ url_for('chatbot') }}" class="active"><i class="fa-solid fa-comments"></i> AI Chatbot</a>
+        <a href="{{ url_for('notifications') }}"><i class="fa-solid fa-bell"></i> Notifications</a>
+        <a href="{{ url_for('profile') }}"><i class="fa-solid fa-user"></i> Profile</a>
+        <hr class="mx-3 text-muted opacity-25">
+        <a href="{{ url_for('index') }}" class="text-danger fw-semibold"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
     </div>
 
+    <!-- Main Content Area -->
     <div class="main-content">
-        <h3 class="fw-bold mb-4">🤖 AI Freshness Assistant</h3>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h3 class="fw-bold mb-1">🤖 AI Freshness Assistant</h3>
+                <p class="text-muted mb-0">Ask questions about food storage, shelf life, and preservation tips.</p>
+            </div>
+        </div>
 
-        <div class="card card-custom p-4" style="max-width: 700px; margin: 0 auto;">
-            <div class="chat-box mb-3" id="chatContainer">
-                <div class="msg-bubble bot-msg">
-                    👋 Hello! I am your AI Freshness Assistant. Ask me anything about food storage or shelf life!
+        <div class="chat-card mx-auto" style="max-width: 750px;">
+            <!-- Header -->
+            <div class="chat-header d-flex align-items-center gap-3">
+                <div class="bg-white text-success rounded-circle d-flex align-items-center justify-content-center" style="width: 44px; height: 44px;">
+                    <i class="fa-solid fa-bot fa-lg"></i>
+                </div>
+                <div>
+                    <h6 class="fw-bold mb-0">Freshness Assistant</h6>
+                    <small class="text-light opacity-75"><i class="fa-solid fa-circle text-warning fs-6 me-1" style="font-size: 8px !important;"></i>Online</small>
                 </div>
             </div>
 
-            <div class="input-group">
-                <input type="text" id="userInput" class="form-control p-2" placeholder="Ask about Milk, Bread, Apple..." onkeypress="handleKeyPress(event)">
-                <button class="btn btn-green px-4" onclick="sendMessage()">Send 🚀</button>
+            <!-- Chat Box -->
+            <div class="chat-box" id="chatContainer">
+                <div class="msg-bubble bot-msg">
+                    👋 <strong>Hello!</strong> I am your AI Freshness Assistant. Ask me anything about food storage, preservation, or shelf life!
+                </div>
+            </div>
+
+            <!-- Quick Suggestions -->
+            <div class="px-4 py-2 bg-light border-top d-flex gap-2 flex-wrap">
+                <span class="suggestion-pill" onclick="sendQuickMessage('How to store milk longer?')">🥛 Milk Storage</span>
+                <span class="suggestion-pill" onclick="sendQuickMessage('Shelf life of fresh apples?')">🍎 Apple Life</span>
+                <span class="suggestion-pill" onclick="sendQuickMessage('How to freeze bread?')">🍞 Freeze Bread</span>
+            </div>
+
+            <!-- Input Bar -->
+            <div class="p-3 bg-white border-top">
+                <div class="input-group">
+                    <input type="text" id="userInput" class="form-control form-control-lg fs-6 border-secondary-subtle" placeholder="Type your query here..." onkeypress="handleKeyPress(event)">
+                    <button class="btn btn-green px-4 fw-semibold" onclick="sendMessage()">
+                        Send <i class="fa-solid fa-paper-plane ms-1"></i>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 
+    <!-- JavaScript Chat Logic -->
     <script>
         async function sendMessage() {
             const input = document.getElementById('userInput');
@@ -77,11 +148,15 @@
             const chatContainer = document.getElementById('chatContainer');
 
             // Show User Message
-            chatContainer.innerHTML += `<div class="msg-bubble user-msg">${message}</div>`;
+            chatContainer.innerHTML += `<div class="msg-bubble user-msg">${escapeHtml(message)}</div>`;
             input.value = '';
             chatContainer.scrollTop = chatContainer.scrollHeight;
 
-            // Fetch Bot Response from app.py API
+            // Add Typing Indicator
+            const typingId = 'typing-' + Date.now();
+            chatContainer.innerHTML += `<div class="msg-bubble bot-msg text-muted" id="${typingId}"><i class="fa-solid fa-ellipsis fa-bounce me-1"></i> Thinking...</div>`;
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+
             try {
                 const response = await fetch('/api/chat', {
                     method: 'POST',
@@ -90,16 +165,30 @@
                 });
                 const data = await response.json();
 
-                // Show Bot Reply
+                // Remove Typing Indicator & Show Reply
+                document.getElementById(typingId).remove();
                 chatContainer.innerHTML += `<div class="msg-bubble bot-msg">${data.response}</div>`;
                 chatContainer.scrollTop = chatContainer.scrollHeight;
             } catch (err) {
-                chatContainer.innerHTML += `<div class="msg-bubble bot-msg text-danger">Error connecting to AI Server.</div>`;
+                document.getElementById(typingId).remove();
+                chatContainer.innerHTML += `<div class="msg-bubble bot-msg text-danger"><i class="fa-solid fa-circle-exclamation me-1"></i> Error connecting to AI Server.</div>`;
+                chatContainer.scrollTop = chatContainer.scrollHeight;
             }
+        }
+
+        function sendQuickMessage(text) {
+            document.getElementById('userInput').value = text;
+            sendMessage();
         }
 
         function handleKeyPress(e) {
             if (e.key === 'Enter') sendMessage();
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
         }
     </script>
 </body>
