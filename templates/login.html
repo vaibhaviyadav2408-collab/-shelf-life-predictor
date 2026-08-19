@@ -3,111 +3,126 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - AI Shelf Life</title>
-    <!-- Google Fonts & Font Awesome Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <title>Login - AI Shelf Life Predictor</title>
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=4.0">
     <style>
-        body.auth-body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
+        body {
             background-color: #f8fafc;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
+            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+            color: #1e293b;
         }
-        .auth-card {
+        .auth-card-wrapper {
             background: #ffffff;
             border-radius: 20px;
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
             overflow: hidden;
-            width: 100%;
-            max-width: 850px;
-            border: 1px solid #e2e8f0;
+            border: 1px solid rgba(226, 232, 240, 0.8);
         }
         .auth-banner {
             background: linear-gradient(135deg, #047857 0%, #10b981 100%);
         }
-        .custom-input {
-            border-radius: 10px;
-            padding: 12px 16px;
-            border: 1px solid #cbd5e1;
-            font-size: 0.95rem;
-        }
-        .custom-input:focus {
-            border-color: #10b981;
-            box-shadow: 0 0 0 0.25rem rgba(16, 185, 129, 0.15);
-        }
         .input-group-text {
-            border-radius: 10px 0 0 10px;
             background-color: #f8fafc;
-            border-color: #cbd5e1;
+            border-right: none;
             color: #64748b;
         }
-        .input-group .custom-input {
-            border-radius: 0 10px 10px 0;
+        .form-control-icon {
+            border-left: none;
+        }
+        .form-control-icon:focus {
+            border-color: #cbd5e1;
+            box-shadow: none;
+        }
+        .input-group:focus-within .input-group-text,
+        .input-group:focus-within .form-control-icon {
+            border-color: #10b981;
+        }
+        .btn-green {
+            background-color: #10b981;
+            color: #ffffff;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: background 0.2s ease;
+        }
+        .btn-green:hover {
+            background-color: #047857;
+            color: #ffffff;
         }
     </style>
 </head>
-<body class="auth-body">
+<body class="bg-light d-flex flex-column min-vh-100 justify-content-between py-4">
 
-<div class="auth-card">
-    <div class="row g-0 h-100">
-        <!-- Banner Section -->
-        <div class="col-md-5 auth-banner d-flex flex-column align-items-center justify-content-center text-center p-4 p-md-5">
-            <img src="https://cdn-icons-png.flaticon.com/512/3081/3081986.png" width="150" class="mb-4 img-fluid filter-drop-shadow" alt="Basket Icon">
-            <h3 class="fw-bold text-white mb-2">Welcome Back!</h3>
-            <p class="text-white-50 fs-6 mb-0">Login to continue and manage your food items smartly.</p>
-        </div>
+<div class="container my-auto">
+    <div class="row justify-content-center">
+        <div class="col-lg-10 col-xl-9">
+            <div class="auth-card-wrapper">
+                <div class="row g-0">
+                    <!-- Left Banner -->
+                    <div class="col-md-5 auth-banner text-center p-4 p-lg-5 d-flex flex-column justify-content-center align-items-center">
+                        <a href="{{ url_for('index') }}" class="text-white text-decoration-none mb-4 d-inline-block opacity-75 hover-opacity-100">
+                            <i class="fa-solid fa-arrow-left me-1"></i> Back to Home
+                        </a>
+                        <img src="https://cdn-icons-png.flaticon.com/512/3081/3081986.png" width="140" class="mb-4" alt="Basket Icon">
+                        <h3 class="fw-bold text-white mb-2">Welcome Back!</h3>
+                        <p class="text-white-50 fs-6 mb-0">Login to manage your food items smartly and prevent waste with AI predictions.</p>
+                    </div>
 
-        <!-- Form Section -->
-        <div class="col-md-7 auth-form-container bg-white d-flex align-items-center justify-content-center p-4 p-md-5">
-            <div class="w-100" style="max-width: 360px;">
-                <div class="mb-4 text-center text-md-start">
-                    <h3 class="fw-bold text-dark mb-1">Sign In</h3>
-                    <p class="text-muted small">Enter your credentials to access your account</p>
+                    <!-- Right Form Container -->
+                    <div class="col-md-7 bg-white p-4 p-md-5 d-flex align-items-center">
+                        <div class="w-100 max-w-md mx-auto">
+                            <div class="mb-4">
+                                <h3 class="fw-bold text-dark m-0">Sign In</h3>
+                                <p class="text-muted small">Enter your credentials to access your account</p>
+                            </div>
+                            
+                            <form action="{{ url_for('login') }}" method="POST">
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold text-secondary small">Email Address</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fa-regular fa-envelope"></i></span>
+                                        <input type="email" name="email" class="form-control form-control-icon" placeholder="name@example.com" required>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <label class="form-label fw-semibold text-secondary small mb-0">Password</label>
+                                    </div>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fa-solid fa-lock"></i></span>
+                                        <input type="password" name="password" class="form-control form-control-icon" placeholder="Enter password" required>
+                                    </div>
+                                </div>
+                                
+                                <button type="submit" class="btn-green w-100 py-3 mb-3">
+                                    Login <i class="fa-solid fa-right-to-bracket ms-1"></i>
+                                </button>
+                            </form>
+                            
+                            <p class="text-center text-muted small m-0">
+                                Don't have an account? 
+                                <a href="{{ url_for('register') }}" class="text-success fw-bold text-decoration-none">Register here</a>
+                            </p>
+                        </div>
+                    </div>
                 </div>
-                
-                <form action="{{ url_for('login') }}" method="POST">
-                    <!-- Email Input -->
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold text-secondary small">Email Address</label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="fa-regular fa-envelope"></i></span>
-                            <input type="email" name="email" class="form-control custom-input" placeholder="name@example.com" required>
-                        </div>
-                    </div>
-                    
-                    <!-- Password Input -->
-                    <div class="mb-4">
-                        <label class="form-label fw-semibold text-secondary small">Password</label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="fa-solid fa-lock"></i></span>
-                            <input type="password" name="password" class="form-control custom-input" placeholder="••••••••" required>
-                        </div>
-                    </div>
-                    
-                    <!-- Submit Button -->
-                    <button type="submit" class="btn btn-green w-100 py-2.5 rounded-3 fw-bold shadow-sm">
-                        Login <i class="fa-solid fa-arrow-right-to-bracket ms-1"></i>
-                    </button>
-                </form>
-                
-                <!-- Navigation Link -->
-                <p class="mt-4 text-center text-muted small mb-0">
-                    Don't have an account? <a href="{{ url_for('register') }}" class="text-success fw-bold text-decoration-none">Register here</a>
-                </p>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Bootstrap 5 JS -->
+<!-- Shared Footer Include -->
+{% include 'footer.html' %}
+
+<!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
