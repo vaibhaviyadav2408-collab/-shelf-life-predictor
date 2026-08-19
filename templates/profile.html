@@ -3,27 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Profile - AI Shelf Life</title>
-    <!-- Google Fonts & Font Awesome Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <title>User Profile - AI Shelf Life Predictor</title>
+    
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=4.0">
+    
     <style>
+        body {
+            background-color: #f8fafc;
+            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+        /* Sidebar Styling */
+        .sidebar {
+            width: 250px;
+            height: 100vh;
+            background-color: #ffffff;
+            border-right: 1px solid #e2e8f0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding: 24px 16px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+        }
+        .sidebar-brand {
+            font-weight: 800;
+            font-size: 1.25rem;
+            color: #047857;
+            padding: 0 12px 16px 12px;
+            border-bottom: 1px solid #f1f5f9;
+            margin-bottom: 16px;
+        }
+        .sidebar a {
+            color: #64748b;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 16px;
+            margin-bottom: 4px;
+            border-radius: 10px;
+            font-weight: 500;
+            font-size: 0.92rem;
+            transition: all 0.2s ease;
+        }
+        .sidebar a:hover, .sidebar a.active {
+            background-color: #ecfdf5;
+            color: #047857;
+            font-weight: 600;
+        }
+        /* Layout Structure */
+        .main-wrapper {
+            margin-left: 250px;
+            width: calc(100% - 250px);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .main-content {
+            padding: 32px;
+            flex: 1;
+        }
+        /* Profile Card Styling */
         .profile-card {
-            max-width: 550px;
+            max-width: 500px;
             margin: 0 auto;
-            border-radius: 20px;
+            border-radius: 16px;
             border: 1px solid #e2e8f0;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
             background: #ffffff;
         }
         .profile-avatar-container {
             position: relative;
-            width: 120px;
-            height: 120px;
+            width: 110px;
+            height: 110px;
             margin: 0 auto 20px auto;
         }
         .profile-avatar {
@@ -31,111 +97,133 @@
             height: 100%;
             border-radius: 50%;
             object-fit: cover;
-            border: 4px solid #10b981;
-            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+            border: 3px solid #10b981;
         }
         .camera-badge {
             position: absolute;
-            bottom: 4px;
-            right: 4px;
-            background: #10b981;
+            bottom: 2px;
+            right: 2px;
+            background: #047857;
             color: white;
             border-radius: 50%;
-            width: 34px;
-            height: 34px;
+            width: 32px;
+            height: 32px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.9rem;
-            border: 3px solid #ffffff;
+            font-size: 0.85rem;
+            border: 2px solid #ffffff;
             cursor: pointer;
-            transition: transform 0.2s ease;
         }
-        .camera-badge:hover {
-            transform: scale(1.1);
-        }
-        .form-control-custom {
+        .btn-green {
+            background-color: #10b981;
+            color: #ffffff;
+            border: none;
+            padding: 10px;
             border-radius: 10px;
-            border: 1px solid #cbd5e1;
-            padding: 10px 14px;
-            background-color: #f8fafc;
-            font-size: 0.95rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+        .btn-green:hover {
+            background-color: #047857;
+            color: #ffffff;
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+            .main-wrapper {
+                margin-left: 0;
+                width: 100%;
+            }
         }
     </style>
 </head>
 <body>
 
+<div class="dashboard-container">
     <!-- Sidebar Navigation -->
     <div class="sidebar">
         <div class="sidebar-brand">
-            <i class="fa-solid fa-leaf text-success me-2"></i>AI Shelf Life
+            🥦 AI Shelf Life <br>
+            <small class="text-muted fw-normal" style="font-size:0.75rem;">Predictor System</small>
         </div>
-        <a href="{{ url_for('dashboard') }}"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
-        <a href="{{ url_for('add_product') }}"><i class="fa-solid fa-plus-circle"></i> Add Product</a>
-        <a href="{{ url_for('product_list') }}"><i class="fa-solid fa-boxes-stacked"></i> Product List</a>
+        <a href="{{ url_for('dashboard') }}"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
+        <a href="{{ url_for('add_product') }}"><i class="fa-solid fa-plus"></i> Add Product</a>
+        <a href="{{ url_for('product_list') }}"><i class="fa-solid fa-list-check"></i> Product List</a>
         <a href="{{ url_for('ai_prediction') }}"><i class="fa-solid fa-robot"></i> AI Prediction</a>
+        <a href="{{ url_for('chatbot') }}"><i class="fa-solid fa-comments"></i> AI Chatbot</a>
         <a href="{{ url_for('notifications') }}"><i class="fa-solid fa-bell"></i> Notifications</a>
         <a href="{{ url_for('profile') }}" class="active"><i class="fa-solid fa-user"></i> Profile</a>
         <a href="{{ url_for('admin') }}"><i class="fa-solid fa-gear"></i> Admin</a>
-        <hr class="mx-3 text-muted opacity-25">
-        <a href="{{ url_for('index') }}" class="text-danger fw-semibold"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+        <hr class="mx-2 my-auto text-muted">
+        <a href="{{ url_for('index') }}" class="text-danger"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
     </div>
 
-    <!-- Main Content Area -->
-    <div class="main-content">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <div>
-                <h3 class="fw-bold mb-1">👤 User Profile</h3>
-                <p class="text-muted mb-0">Manage your personal account details and preferences.</p>
+    <!-- Main Wrapper -->
+    <div class="main-wrapper">
+        <div class="main-content">
+            <div class="d-flex align-items-center justify-content-between mb-4">
+                <h3 class="fw-bold m-0 text-dark"><i class="fa-solid fa-user text-success me-2"></i>User Profile</h3>
+                <span class="badge bg-light text-dark border px-3 py-2 rounded-pill fw-semibold">
+                    Account Settings
+                </span>
+            </div>
+
+            <!-- Profile Card -->
+            <div class="card profile-card p-4 p-md-5">
+                <div class="profile-avatar-container">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Vaibhavi" class="profile-avatar bg-light" alt="User Avatar">
+                    <div class="camera-badge" title="Change Avatar">
+                        <i class="fa-solid fa-camera"></i>
+                    </div>
+                </div>
+
+                <form>
+                    <div class="mb-3 text-start">
+                        <label class="form-label text-muted small fw-semibold">Full Name</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light text-muted"><i class="fa-regular fa-user"></i></span>
+                            <input type="text" class="form-control p-2 bg-light" value="{{ user.name if user else 'Vaibhavi Yadav' }}" readonly>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 text-start">
+                        <label class="form-label text-muted small fw-semibold">Email Address</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light text-muted"><i class="fa-regular fa-envelope"></i></span>
+                            <input type="email" class="form-control p-2 bg-light" value="{{ user.email if user else 'vaibhavi@gmail.com' }}" readonly>
+                        </div>
+                    </div>
+
+                    <div class="mb-4 text-start">
+                        <label class="form-label text-muted small fw-semibold">Mobile Number</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light text-muted"><i class="fa-solid fa-phone"></i></span>
+                            <input type="text" class="form-control p-2 bg-light" value="{{ user.mobile if user else '9876543210' }}" readonly>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-3 flex-wrap">
+                        <button type="button" class="btn btn-green flex-grow-1">
+                            <i class="fa-solid fa-pen-to-square me-1"></i> Edit Profile
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary flex-grow-1 rounded-3 fw-semibold">
+                            <i class="fa-solid fa-key me-1"></i> Change Password
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
 
-        <div class="card profile-card p-4 p-md-5">
-            <!-- Profile Avatar -->
-            <div class="profile-avatar-container">
-                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Vaibhavi" class="profile-avatar bg-light" alt="User Avatar">
-                <div class="camera-badge" title="Change Photo">
-                    <i class="fa-solid fa-camera"></i>
-                </div>
-            </div>
-
-            <!-- Profile Info Form -->
-            <form>
-                <div class="mb-3 text-start">
-                    <label class="form-label text-muted small fw-semibold">
-                        <i class="fa-regular fa-user me-1"></i> Full Name
-                    </label>
-                    <input type="text" class="form-control form-control-custom" value="{{ user.name if user else 'Vaibhavi Yadav' }}" readonly>
-                </div>
-
-                <div class="mb-3 text-start">
-                    <label class="form-label text-muted small fw-semibold">
-                        <i class="fa-regular fa-envelope me-1"></i> Email Address
-                    </label>
-                    <input type="email" class="form-control form-control-custom" value="{{ user.email if user else 'vaibhavi@gmail.com' }}" readonly>
-                </div>
-
-                <div class="mb-4 text-start">
-                    <label class="form-label text-muted small fw-semibold">
-                        <i class="fa-solid fa-mobile-screen-button me-1"></i> Mobile Number
-                    </label>
-                    <input type="text" class="form-control form-control-custom" value="{{ user.mobile if user else '9876543210' }}" readonly>
-                </div>
-
-                <!-- Action Buttons -->
-                <div class="d-flex flex-wrap gap-3">
-                    <button type="button" class="btn btn-green flex-grow-1 rounded-pill fw-semibold py-2">
-                        <i class="fa-solid fa-user-pen me-1"></i> Edit Profile
-                    </button>
-                    <button type="button" class="btn btn-outline-secondary flex-grow-1 rounded-pill fw-semibold py-2">
-                        <i class="fa-solid fa-key me-1"></i> Change Password
-                    </button>
-                </div>
-            </form>
-        </div>
+        <!-- Shared Footer Include -->
+        {% include 'footer.html' %}
     </div>
+</div>
 
-    <!-- Bootstrap 5 JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
