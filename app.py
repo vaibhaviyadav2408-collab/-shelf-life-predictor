@@ -1,5 +1,6 @@
 import os
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
+from flask_mail import Mail, Message
 import firebase_admin
 from firebase_admin import credentials, firestore
 
@@ -10,6 +11,29 @@ STATIC_DIR = os.path.join(BASE_DIR, 'static')
 
 app = Flask(__name__, template_folder=TEMPLATE_DIR, static_folder=STATIC_DIR)
 app.secret_key = "aishelflifesupersecretkey"
+
+# ==================== MAIL CONFIGURATION ====================
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = 'vaibhavi@gmail.com'  # इथे तुमचा मूळ Gmail ID टाका
+app.config['MAIL_PASSWORD'] = 'ygseiggzpbiywppu'     # जनरेट झालेला 16-digit App Password
+
+mail = Mail(app)
+
+# ==================== NOTIFICATION FUNCTION ====================
+def send_expiry_email(user_email, product_name, exp_date):
+    try:
+        msg = Message(
+            subject="⚠️ AI Shelf Life Alert: Item Expiring Soon!",
+            sender=app.config['MAIL_USERNAME'],
+            recipients=[user_email]
+        )
+        msg.body = f"नमस्कार,\n\nतुमचा '{product_name}' हा पदार्थ {exp_date} ला Expire होत आहे. कृपया त्याचा वेळेत वापर करा.\n\nधन्यवाद,\nAI Shelf Life Team"
+        mail.send(msg)
+        print("✅ Email sent successfully!")
+    except Exception as e:
+        print(f"❌ Failed to send email: {e}")
 
 # ==================== FIREBASE SETUP ====================
 db = None
@@ -58,7 +82,6 @@ def add_product():
 
 @app.route('/product-list')
 def product_list():
-    # Sample products list for UI testing
     dummy_products = [
         {"name": "Fresh Milk", "category": "Dairy", "mfg_date": "2026-08-15", "exp_date": "2026-08-22", "status": "Fresh"},
         {"name": "Whole Wheat Bread", "category": "Bakery", "mfg_date": "2026-08-16", "exp_date": "2026-08-20", "status": "Expiring Soon"},
