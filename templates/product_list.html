@@ -3,155 +3,216 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product List - AI Shelf Life</title>
-    <!-- Google Fonts & Font Awesome Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <title>Product List - AI Shelf Life Predictor</title>
+    
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=4.0">
+    
     <style>
-        .table-card {
-            border: 1px solid #e2e8f0;
-            border-radius: 16px;
-            background: #ffffff;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.03);
-            overflow: hidden;
+        body {
+            background-color: #f8fafc;
+            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+            margin: 0;
+            padding: 0;
         }
-        .badge-fresh {
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+        /* Sidebar Styling */
+        .sidebar {
+            width: 250px;
+            height: 100vh;
+            background-color: #ffffff;
+            border-right: 1px solid #e2e8f0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding: 24px 16px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+        }
+        .sidebar-brand {
+            font-weight: 800;
+            font-size: 1.25rem;
+            color: #047857;
+            padding: 0 12px 16px 12px;
+            border-bottom: 1px solid #f1f5f9;
+            margin-bottom: 16px;
+        }
+        .sidebar a {
+            color: #64748b;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 16px;
+            margin-bottom: 4px;
+            border-radius: 10px;
+            font-weight: 500;
+            font-size: 0.92rem;
+            transition: all 0.2s ease;
+        }
+        .sidebar a:hover, .sidebar a.active {
             background-color: #ecfdf5;
             color: #047857;
-            border: 1px solid #a7f3d0;
+            font-weight: 600;
+        }
+        /* Layout Structure */
+        .main-wrapper {
+            margin-left: 250px;
+            width: calc(100% - 250px);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .main-content {
+            padding: 32px;
+            flex: 1;
+        }
+        /* Card & Table Styling */
+        .card-custom {
+            border: none;
+            border-radius: 16px;
+            background: #ffffff;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+            border: 1px solid #e2e8f0;
+        }
+        .table thead th {
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 12px;
+        }
+        .table td {
+            padding: 16px 12px;
+        }
+        /* Badges */
+        .badge-fresh {
+            background-color: #d1fae5;
+            color: #047857;
             padding: 6px 12px;
             border-radius: 20px;
-            font-size: 0.825rem;
             font-weight: 600;
+            font-size: 0.8rem;
         }
         .badge-expiring {
-            background-color: #fffbeb;
+            background-color: #fef3c7;
             color: #b45309;
-            border: 1px solid #fde68a;
             padding: 6px 12px;
             border-radius: 20px;
-            font-size: 0.825rem;
             font-weight: 600;
+            font-size: 0.8rem;
         }
         .badge-expired {
-            background-color: #fef2f2;
+            background-color: #fee2e2;
             color: #b91c1c;
-            border: 1px solid #fecaca;
             padding: 6px 12px;
             border-radius: 20px;
-            font-size: 0.825rem;
             font-weight: 600;
+            font-size: 0.8rem;
         }
-        .search-box {
-            border-radius: 10px;
-            border: 1px solid #cbd5e1;
-            padding: 8px 16px;
-            font-size: 0.9rem;
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+            .main-wrapper {
+                margin-left: 0;
+                width: 100%;
+            }
         }
     </style>
 </head>
 <body>
 
+<div class="dashboard-container">
     <!-- Sidebar Navigation -->
     <div class="sidebar">
         <div class="sidebar-brand">
-            <i class="fa-solid fa-leaf text-success me-2"></i>AI Shelf Life
+            🥦 AI Shelf Life <br>
+            <small class="text-muted fw-normal" style="font-size:0.75rem;">Predictor System</small>
         </div>
-        <a href="{{ url_for('dashboard') }}"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
-        <a href="{{ url_for('add_product') }}"><i class="fa-solid fa-plus-circle"></i> Add Product</a>
-        <a href="{{ url_for('product_list') }}" class="active"><i class="fa-solid fa-boxes-stacked"></i> Product List</a>
+        <a href="{{ url_for('dashboard') }}"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
+        <a href="{{ url_for('add_product') }}"><i class="fa-solid fa-plus"></i> Add Product</a>
+        <a href="{{ url_for('product_list') }}" class="active"><i class="fa-solid fa-list-check"></i> Product List</a>
         <a href="{{ url_for('ai_prediction') }}"><i class="fa-solid fa-robot"></i> AI Prediction</a>
+        <a href="{{ url_for('chatbot') }}"><i class="fa-solid fa-comments"></i> AI Chatbot</a>
         <a href="{{ url_for('notifications') }}"><i class="fa-solid fa-bell"></i> Notifications</a>
         <a href="{{ url_for('profile') }}"><i class="fa-solid fa-user"></i> Profile</a>
-        <hr class="mx-3 text-muted opacity-25">
-        <a href="{{ url_for('index') }}" class="text-danger fw-semibold"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+        <hr class="mx-2 my-auto text-muted">
+        <a href="{{ url_for('index') }}" class="text-danger"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
     </div>
 
-    <!-- Main Content Area -->
-    <div class="main-content">
-        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
-            <div>
-                <h3 class="fw-bold mb-1">📋 Product List</h3>
-                <p class="text-muted mb-0">View and manage all items stored in your inventory.</p>
+    <!-- Main Wrapper -->
+    <div class="main-wrapper">
+        <div class="main-content">
+            <div class="d-flex align-items-center justify-content-between mb-4">
+                <h3 class="fw-bold m-0 text-dark"><i class="fa-solid fa-list-check text-success me-2"></i>Product List</h3>
+                <a href="{{ url_for('add_product') }}" class="btn btn-sm btn-success rounded-3 fw-bold px-3">
+                    <i class="fa-solid fa-plus me-1"></i> Add New Product
+                </a>
             </div>
-            <a href="{{ url_for('add_product') }}" class="btn btn-green rounded-pill px-4">
-                <i class="fa-solid fa-plus me-1"></i> Add New Product
-            </a>
-        </div>
 
-        <!-- Filter & Table Card -->
-        <div class="table-card p-4">
-            <!-- Search Control -->
-            <div class="row g-3 mb-3 align-items-center">
-                <div class="col-md-4">
-                    <div class="input-group">
-                        <span class="input-group-text bg-light border-end-0"><i class="fa-solid fa-magnifying-glass text-muted"></i></span>
-                        <input type="text" class="form-control search-box border-start-0" placeholder="Search products...">
-                    </div>
+            <!-- Table Card -->
+            <div class="card card-custom p-3 p-md-4">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead>
+                            <tr class="text-muted">
+                                <th>Product Name</th>
+                                <th>Category</th>
+                                <th>Mfg. Date</th>
+                                <th>Expiry Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for p in products %}
+                            <tr>
+                                <td class="fw-bold text-dark">{{ p.name }}</td>
+                                <td>{{ p.category }}</td>
+                                <td>{{ p.mfg_date }}</td>
+                                <td>{{ p.exp_date }}</td>
+                                <td>
+                                    {% if p.status == 'Fresh' %}
+                                        <span class="badge-fresh">Fresh</span>
+                                    {% elif p.status == 'Expiring Soon' %}
+                                        <span class="badge-expiring">Expiring Soon</span>
+                                    {% else %}
+                                        <span class="badge-expired">Expired</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="5" class="text-center py-4 text-muted">
+                                    No products found. <a href="{{ url_for('add_product') }}" class="text-success fw-bold">Add your first product</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
             </div>
-
-            <!-- Table -->
-            <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
-                    <thead class="table-light">
-                        <tr class="text-secondary small text-uppercase">
-                            <th>Product Name</th>
-                            <th>Category</th>
-                            <th>Mfg. Date</th>
-                            <th>Expiry Date</th>
-                            <th>Status</th>
-                            <th class="text-end">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for p in products %}
-                        <tr>
-                            <td>
-                                <div class="fw-bold text-dark">{{ p.name }}</div>
-                            </td>
-                            <td>
-                                <span class="badge bg-light text-secondary border px-2 py-1 fs-7">{{ p.category }}</span>
-                            </td>
-                            <td class="text-muted small">{{ p.mfg_date }}</td>
-                            <td class="text-muted small">{{ p.exp_date }}</td>
-                            <td>
-                                {% if p.status == 'Fresh' %}
-                                    <span class="badge-fresh"><i class="fa-solid fa-circle-check me-1"></i>Fresh</span>
-                                {% elif p.status == 'Expiring Soon' %}
-                                    <span class="badge-expiring"><i class="fa-solid fa-clock me-1"></i>Expiring Soon</span>
-                                {% else %}
-                                    <span class="badge-expired"><i class="fa-solid fa-triangle-exclamation me-1"></i>Expired</span>
-                                {% endif %}
-                            </td>
-                            <td class="text-end">
-                                <button class="btn btn-sm btn-outline-secondary rounded-2 me-1" title="Edit">
-                                    <i class="fa-solid fa-pen-to-square"></i>
-                                </button>
-                                <button class="btn btn-sm btn-outline-danger rounded-2" title="Delete">
-                                    <i class="fa-solid fa-trash"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        {% else %}
-                        <tr>
-                            <td colspan="6" class="text-center py-4 text-muted">
-                                <i class="fa-solid fa-box-open fs-3 mb-2 d-block"></i>
-                                No products found in inventory.
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
         </div>
-    </div>
 
-    <!-- Bootstrap 5 JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Shared Footer Include -->
+        {% include 'footer.html' %}
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
