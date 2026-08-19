@@ -3,153 +3,237 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - AI Shelf Life</title>
+    <title>Dashboard - AI Shelf Life Predictor</title>
+    <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <style>
-        body { background-color: #f8fafc; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; }
-        
-        /* Dark Left Sidebar */
-        .sidebar {
-            width: 250px; height: 100vh; position: fixed; top: 0; left: 0;
-            background: #1e293b; color: #ffffff; padding: 25px 20px;
-            display: flex; flex-direction: column; z-index: 1000;
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
         }
-        .sidebar-brand { font-size: 1.3rem; font-weight: 700; color: #10b981; margin-bottom: 35px; }
-        .sidebar a {
-            color: #94a3b8; text-decoration: none; padding: 12px 16px; border-radius: 8px;
-            margin-bottom: 8px; display: flex; align-items: center; font-weight: 500;
+        .main-wrapper {
+            margin-left: 260px;
+            width: calc(100% - 260px);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
-        .sidebar a:hover, .sidebar a.active { background: #334155; color: #ffffff; }
-
-        /* Main Content Area */
-        .main-content { margin-left: 250px; padding: 35px; min-height: 100vh; }
-        .card-custom { border: none; border-radius: 14px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03); background: #ffffff; }
-        .stat-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
-
-        /* Floating AI Chatbot Button */
-        .chat-btn {
-            position: fixed; bottom: 25px; right: 25px; width: 60px; height: 60px;
-            background: #10b981; color: white; border-radius: 50%; display: flex;
-            align-items: center; justify-content: center; font-size: 24px;
-            cursor: pointer; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4); border: none; z-index: 1050;
+        .main-content {
+            padding: 32px;
+            flex: 1;
         }
-        .chat-box {
-            position: fixed; bottom: 95px; right: 25px; width: 340px; height: 420px;
-            background: #ffffff; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-            display: none; flex-direction: column; overflow: hidden; z-index: 1050; border: 1px solid #e2e8f0;
+        .stat-card {
+            border-radius: 14px;
+            padding: 20px;
+            background: #ffffff;
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            transition: transform 0.2s ease;
         }
-        .chat-header { background: #10b981; color: white; padding: 15px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; }
-        .chat-body { flex: 1; padding: 15px; overflow-y: auto; background: #f8fafc; font-size: 14px; }
-        .chat-msg { margin-bottom: 10px; max-width: 80%; padding: 10px 14px; border-radius: 12px; font-size: 13px; line-height: 1.4; }
-        .msg-bot { background: #e2e8f0; color: #1e293b; align-self: flex-start; border-bottom-left-radius: 2px; }
-        .msg-user { background: #10b981; color: white; margin-left: auto; border-bottom-right-radius: 2px; }
-        .chat-footer { padding: 10px; background: white; border-top: 1px solid #e2e8f0; display: flex; gap: 8px; }
+        .stat-card:hover {
+            transform: translateY(-2px);
+        }
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+        }
+        .item-thumb {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: #f8fafc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            border: 1px solid #e2e8f0;
+        }
+        .chart-circle {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            background: conic-gradient(#10b981 0% 67%, #f59e0b 67% 88%, #ef4444 88% 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px auto;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+        }
+        .chart-inner {
+            width: 105px;
+            height: 105px;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+            .main-wrapper {
+                margin-left: 0;
+                width: 100%;
+            }
+        }
     </style>
 </head>
 <body>
 
-<div class="sidebar">
-    <div class="sidebar-brand"><i class="fa-solid fa-leaf me-2"></i> AI Shelf Life</div>
-    <a href="/dashboard" class="active"><i class="fa-solid fa-chart-pie me-3"></i> Dashboard</a>
-    <a href="/add-product"><i class="fa-solid fa-plus me-3"></i> Add Product</a>
-    <a href="/product-list"><i class="fa-solid fa-list me-3"></i> Product List</a>
-    <a href="/ai-prediction"><i class="fa-solid fa-robot me-3"></i> AI Prediction</a>
-    <a href="/notifications"><i class="fa-solid fa-bell me-3"></i> Notifications</a>
-    <a href="/profile"><i class="fa-solid fa-user me-3"></i> Profile</a>
-    <a href="/logout" class="mt-auto text-danger"><i class="fa-solid fa-right-from-bracket me-3"></i> Logout</a>
-</div>
+<div class="dashboard-container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-brand mb-3">
+            🥦 AI Shelf Life <br>
+            <small class="text-muted fw-normal" style="font-size:0.75rem;">Predictor System</small>
+        </div>
+        <a href="{{ url_for('dashboard') }}" class="active"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
+        <a href="{{ url_for('add_product') }}"><i class="fa-solid fa-plus"></i> Add Product</a>
+        <a href="{{ url_for('product_list') }}"><i class="fa-solid fa-list-check"></i> Product List</a>
+        <a href="{{ url_for('ai_prediction') }}"><i class="fa-solid fa-robot"></i> AI Prediction</a>
+        <a href="{{ url_for('notifications') }}"><i class="fa-solid fa-bell"></i> Notifications</a>
+        <a href="{{ url_for('profile') }}"><i class="fa-solid fa-user"></i> Profile</a>
+        <hr class="mx-3 my-3 text-muted">
+        <a href="{{ url_for('index') }}" class="text-danger"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+    </div>
 
-<div class="main-content">
-    <h3 class="fw-bold mb-4">Dashboard Overview</h3>
+    <!-- Main Content Wrapper -->
+    <div class="main-wrapper">
+        <div class="main-content">
+            <div class="d-flex align-items-center justify-content-between mb-4">
+                <h3 class="fw-bold m-0 text-dark">Dashboard</h3>
+                <span class="badge bg-light text-dark border px-3 py-2 rounded-pill fw-semibold">
+                    <i class="fa-regular fa-calendar me-1"></i> 2026 Overview
+                </span>
+            </div>
 
-    <div class="row g-3 mb-4">
-        <div class="col-md-3">
-            <div class="card card-custom p-3 border-start border-primary border-4">
-                <div class="d-flex align-items-center justify-content-between">
-                    <div><p class="text-muted mb-1 small fw-semibold">Total Products</p><h3 class="fw-bold mb-0">24</h3></div>
-                    <div class="stat-icon bg-primary-subtle text-primary"><i class="fa-solid fa-box"></i></div>
+            <!-- Stat Cards -->
+            <div class="row g-3 mb-4">
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-icon bg-primary bg-opacity-10 text-primary">📦</div>
+                        <div>
+                            <span class="text-muted small fw-semibold">Total Products</span>
+                            <h3 class="fw-bold m-0 text-dark">24</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-icon bg-success bg-opacity-10 text-success">🥗</div>
+                        <div>
+                            <span class="text-muted small fw-semibold">Fresh Items</span>
+                            <h3 class="fw-bold m-0 text-dark">16</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-icon bg-warning bg-opacity-10 text-warning">⏳</div>
+                        <div>
+                            <span class="text-muted small fw-semibold">Expiring Soon</span>
+                            <h3 class="fw-bold m-0 text-dark">5</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-icon bg-danger bg-opacity-10 text-danger">⚠️</div>
+                        <div>
+                            <span class="text-muted small fw-semibold">Expired Items</span>
+                            <h3 class="fw-bold m-0 text-dark">3</h3>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card card-custom p-3 border-start border-success border-4">
-                <div class="d-flex align-items-center justify-content-between">
-                    <div><p class="text-muted mb-1 small fw-semibold">Fresh Items</p><h3 class="fw-bold mb-0 text-success">16</h3></div>
-                    <div class="stat-icon bg-success-subtle text-success"><i class="fa-solid fa-seedling"></i></div>
+
+            <!-- Content Cards -->
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="card card-custom p-4 h-100">
+                        <h5 class="fw-bold mb-3 text-dark">Expiring Soon</h5>
+                        <div class="list-group list-group-flush">
+                            <div class="list-group-item d-flex align-items-center justify-content-between px-0 py-2 border-bottom">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="item-thumb">🥛</div>
+                                    <div>
+                                        <h6 class="fw-bold mb-0 text-dark">Milk</h6>
+                                        <small class="text-danger fw-semibold">Expires in 1 day</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="list-group-item d-flex align-items-center justify-content-between px-0 py-2 border-bottom">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="item-thumb">🍞</div>
+                                    <div>
+                                        <h6 class="fw-bold mb-0 text-dark">Bread</h6>
+                                        <small class="text-warning fw-semibold">Expires in 2 days</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="list-group-item d-flex align-items-center justify-content-between px-0 py-2 border-bottom">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="item-thumb">🥣</div>
+                                    <div>
+                                        <h6 class="fw-bold mb-0 text-dark">Yogurt</h6>
+                                        <small class="text-warning fw-semibold">Expires in 2 days</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="list-group-item d-flex align-items-center justify-content-between px-0 py-2 border-bottom">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="item-thumb">🍎</div>
+                                    <div>
+                                        <h6 class="fw-bold mb-0 text-dark">Apple</h6>
+                                        <small class="text-warning fw-semibold">Expires in 3 days</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-center mt-3 pt-2">
+                            <a href="{{ url_for('product_list') }}" class="btn btn-sm btn-outline-green">View All Products</a>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card card-custom p-3 border-start border-warning border-4">
-                <div class="d-flex align-items-center justify-content-between">
-                    <div><p class="text-muted mb-1 small fw-semibold">Expiring Soon</p><h3 class="fw-bold mb-0 text-warning">5</h3></div>
-                    <div class="stat-icon bg-warning-subtle text-warning"><i class="fa-solid fa-hourglass-half"></i></div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card card-custom p-3 border-start border-danger border-4">
-                <div class="d-flex align-items-center justify-content-between">
-                    <div><p class="text-muted mb-1 small fw-semibold">Expired Items</p><h3 class="fw-bold mb-0 text-danger">3</h3></div>
-                    <div class="stat-icon bg-danger-subtle text-danger"><i class="fa-solid fa-triangle-exclamation"></i></div>
+
+                <div class="col-md-6">
+                    <div class="card card-custom p-4 text-center h-100">
+                        <h5 class="fw-bold mb-2 text-dark">Products Overview</h5>
+                        <div class="chart-circle">
+                            <div class="chart-inner">
+                                <span class="text-muted small">Total</span>
+                                <h4 class="fw-bold m-0 text-dark">24</h4>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-center gap-3 mt-3 flex-wrap">
+                            <small class="text-success fw-bold">● Fresh (16)</small>
+                            <small class="text-warning fw-bold">● Expiring Soon (5)</small>
+                            <small class="text-danger fw-bold">● Expired (3)</small>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<button class="chat-btn" onclick="toggleChat()"><i class="fa-solid fa-robot"></i></button>
-
-<div class="chat-box" id="chatBox">
-    <div class="chat-header">
-        <span><i class="fa-solid fa-robot me-2"></i> AI Assistant</span>
-        <i class="fa-solid fa-xmark" style="cursor:pointer;" onclick="toggleChat()"></i>
-    </div>
-    <div class="chat-body d-flex flex-column" id="chatMessages">
-        <div class="chat-msg msg-bot">Hello! 👋 Ask me anything about food shelf life!</div>
-    </div>
-    <div class="chat-footer">
-        <input type="text" id="chatInput" class="form-control form-control-sm" placeholder="Ask something..." onkeypress="handleKey(event)">
-        <button class="btn btn-sm btn-success px-3" onclick="sendMessage()"><i class="fa-solid fa-paper-plane"></i></button>
-    </div>
-</div>
-
-<script>
-    function toggleChat() {
-        const box = document.getElementById('chatBox');
-        box.style.display = (box.style.display === 'flex') ? 'none' : 'flex';
-    }
-    function handleKey(e) { if (e.key === 'Enter') sendMessage(); }
-    async function sendMessage() {
-        const input = document.getElementById('chatInput');
-        const text = input.value.trim();
-        if (!text) return;
-
-        const container = document.getElementById('chatMessages');
-        const userDiv = document.createElement('div');
-        userDiv.className = 'chat-msg msg-user';
-        userDiv.innerText = text;
-        container.appendChild(userDiv);
-        input.value = '';
-        container.scrollTop = container.scrollHeight;
-
-        try {
-            const res = await fetch('/chat', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message: text })
-            });
-            const data = await res.json();
-            const botDiv = document.createElement('div');
-            botDiv.className = 'chat-msg msg-bot';
-            botDiv.innerText = data.reply;
-            container.appendChild(botDiv);
-            container.scrollTop = container.scrollHeight;
-        } catch (err) { console.error(err); }
-    }
-</script>
-
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
