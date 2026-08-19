@@ -4,111 +4,203 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About Us - AI Shelf Life Predictor</title>
-    <!-- Google Fonts & Font Awesome Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=4.0">
     <style>
         body {
             background-color: #f8fafc;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            color: #0f172a;
+            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
         }
-        .about-card {
-            border: 1px solid #e2e8f0;
-            border-radius: 20px;
-            background: #ffffff;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
         }
+        /* Sidebar Styling */
+        .sidebar {
+            width: 250px;
+            height: 100vh;
+            background-color: #ffffff;
+            border-right: 1px solid #e2e8f0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding: 24px 16px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+        }
+        .sidebar-brand {
+            font-weight: 800;
+            font-size: 1.25rem;
+            color: #047857;
+            padding: 0 12px 16px 12px;
+            border-bottom: 1px solid #f1f5f9;
+            margin-bottom: 16px;
+        }
+        .sidebar a {
+            color: #64748b;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 16px;
+            margin-bottom: 4px;
+            border-radius: 10px;
+            font-weight: 500;
+            font-size: 0.92rem;
+            transition: all 0.2s ease;
+        }
+        .sidebar a:hover, .sidebar a.active {
+            background-color: #ecfdf5;
+            color: #047857;
+            font-weight: 600;
+        }
+        /* Layout Alignment */
+        .main-wrapper {
+            margin-left: 250px;
+            width: calc(100% - 250px);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .main-content {
+            padding: 32px;
+            flex: 1;
+        }
+        /* Card Styling */
         .feature-icon-box {
             width: 48px;
             height: 48px;
             border-radius: 12px;
+            background: #ecfdf5;
+            color: #047857;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 1.25rem;
-            background: #ecfdf5;
-            color: #10b981;
+            margin-bottom: 16px;
         }
-        .dev-badge {
-            background: #f1f5f9;
-            border-radius: 14px;
-            padding: 16px;
-            border: 1px solid #e2e8f0;
+        /* Footer */
+        .dashboard-footer {
+            background-color: #ffffff;
+            border-top: 1px solid #e2e8f0;
+            padding: 16px 32px;
+            margin-top: auto;
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+            .main-wrapper {
+                margin-left: 0;
+                width: 100%;
+            }
         }
     </style>
 </head>
-<body class="p-3 p-md-5">
+<body>
 
-    <div class="container" style="max-width: 800px;">
-        <div class="about-card p-4 p-md-5">
-            
-            <!-- Header -->
-            <div class="d-flex align-items-center gap-3 mb-4">
-                <div class="feature-icon-box fs-3 p-3">
-                    <i class="fa-solid fa-leaf"></i>
-                </div>
-                <div>
-                    <h3 class="fw-bold mb-0">ℹ️ About the Project</h3>
-                    <p class="text-muted mb-0">AI Shelf Life Predictor</p>
-                </div>
-            </div>
-
-            <!-- Description -->
-            <p class="fs-6 text-secondary leading-relaxed mb-4">
-                हा प्रोजेक्ट <strong>AI (Artificial Intelligence)</strong> आणि <strong>Flask Framework</strong> चा वापर करून अन्नाची होणारी नासाडी रोखण्यासाठी (Food Waste Management) तयार करण्यात आला आहे. यामध्ये AI तंत्रज्ञानाद्वारे अन्नाचे शेल्फ लाईफ भाकीत करून वापरकर्त्याला वेळेवर सूचना दिल्या जातात[cite: 11].
-            </p>
-
-            <hr class="my-4 border-secondary opacity-25">
-
-            <!-- Key Features -->
-            <h5 class="fw-bold mb-3"><i class="fa-solid fa-star text-warning me-2"></i>मुख्य वैशिष्ट्ये (Key Features):</h5>
-            <div class="row g-3 mb-4">
-                <div class="col-md-6">
-                    <div class="d-flex align-items-center gap-3 p-3 rounded-3 border bg-light">
-                        <i class="fa-solid fa-robot text-success fs-4"></i>
-                        <div>
-                            <h6 class="fw-bold mb-0">AI Shelf Prediction</h6>
-                            <small class="text-muted">अन्नाची गुणवत्ता व टिकण्याची क्षमता ओळखणे[cite: 11].</small>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="d-flex align-items-center gap-3 p-3 rounded-3 border bg-light">
-                        <i class="fa-solid fa-bell text-warning fs-4"></i>
-                        <div>
-                            <h6 class="fw-bold mb-0">Smart Alerts</h6>
-                            <small class="text-muted">पदार्थ खराब होण्यापूर्वी मिळणाऱ्या नोटिफिकेशन्स[cite: 11].</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Developer Info -->
-            <div class="dev-badge mb-4">
-                <h6 class="fw-bold text-dark mb-2"><i class="fa-solid fa-code me-2 text-primary"></i>Project Information</h6>
-                <div class="row g-2 text-secondary small">
-                    <div class="col-sm-6"><strong>Developed By:</strong> Vaibhavi Yadav[cite: 10]</div>
-                    <div class="col-sm-6"><strong>College:</strong> KBP Polytechnic, Satara[cite: 10]</div>
-                    <div class="col-sm-6"><strong>Project Type:</strong> 2026 Implant Training[cite: 10]</div>
-                    <div class="col-sm-6"><strong>Tech Stack:</strong> Python, Flask, Bootstrap 5, AI/ML[cite: 11]</div>
-                </div>
-            </div>
-
-            <!-- Action Button -->
-            <div class="d-flex justify-content-between align-items-center pt-2">
-                <a href="{{ url_for('dashboard') }}" class="btn btn-secondary px-4 rounded-pill">
-                    <i class="fa-solid fa-arrow-left me-1"></i> Back to Dashboard[cite: 11]
-                </a>
-                <span class="text-muted small">© 2026 AI Shelf Life Predictor[cite: 10]</span>
-            </div>
-
+<div class="dashboard-container">
+    <!-- Sidebar Navigation -->
+    <div class="sidebar">
+        <div class="sidebar-brand">
+            🥦 AI Shelf Life <br>
+            <small class="text-muted fw-normal" style="font-size:0.75rem;">Predictor System</small>
         </div>
+        <a href="{{ url_for('dashboard') }}"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
+        <a href="{{ url_for('add_product') }}"><i class="fa-solid fa-plus"></i> Add Product</a>
+        <a href="{{ url_for('product_list') }}"><i class="fa-solid fa-list-check"></i> Product List</a>
+        <a href="{{ url_for('ai_prediction') }}"><i class="fa-solid fa-robot"></i> AI Prediction</a>
+        <a href="{{ url_for('notifications') }}"><i class="fa-solid fa-bell"></i> Notifications</a>
+        <a href="{{ url_for('profile') }}"><i class="fa-solid fa-user"></i> Profile</a>
+        <hr class="mx-2 my-auto text-muted">
+        <a href="{{ url_for('index') }}" class="text-danger"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
     </div>
 
+    <!-- Main Content Wrapper -->
+    <div class="main-wrapper">
+        <div class="main-content">
+            <div class="d-flex align-items-center justify-content-between mb-4">
+                <div>
+                    <h3 class="fw-bold m-0 text-dark">ℹ️ About Project</h3>
+                    <small class="text-muted">Learn more about our AI-driven food management initiative.</small>
+                </div>
+                <a href="{{ url_for('dashboard') }}" class="btn btn-outline-success rounded-3 fw-semibold px-3 btn-sm">
+                    <i class="fa-solid fa-arrow-left me-1"></i> Back to Dashboard
+                </a>
+            </div>
+
+            <!-- Project Intro Card -->
+            <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white">
+                <div class="row align-items-center g-4">
+                    <div class="col-md-8">
+                        <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3 py-1 mb-2 fw-semibold">About Us</span>
+                        <h4 class="fw-bold text-dark mb-3">AI & Flask आधारित अन्न नासाडी निवारण प्रणाली</h4>
+                        <p class="text-muted leading-relaxed mb-0">
+                            हा प्रोजेक्ट AI (Artificial Intelligence) आणि Python Flask चा वापर करून अन्नाची होणारी नासाडी रोखण्यासाठी विशेषतः तयार करण्यात आला आहे[cite: 4]. तंत्रज्ञानाच्या साहाय्याने खाद्यपदार्थांचे टिकण्याची क्षमता (Shelf Life) आधीच ओळखून वेळेवर अलर्ट देणे हा या सिस्टीमचा मुख्य उद्देश आहे.
+                        </p>
+                    </div>
+                    <div class="col-md-4 text-center">
+                        <div class="p-3 bg-light rounded-4">
+                            <span style="font-size: 3.5rem;">🥦</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Key Features Grid -->
+            <div class="row g-4 mb-4">
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm rounded-4 p-4 h-100 bg-white">
+                        <div class="feature-icon-box">
+                            <i class="fa-solid fa-robot"></i>
+                        </div>
+                        <h6 class="fw-bold text-dark">AI Expiry Prediction</h6>
+                        <p class="text-muted small mb-0">खाद्यपदार्थांचा फोटो किंवा डेटा वापरून AI च्या साहाय्याने अचूक शेल्फ लाईफचा अंदाज लावणे.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm rounded-4 p-4 h-100 bg-white">
+                        <div class="feature-icon-box">
+                            <i class="fa-solid fa-bell"></i>
+                        </div>
+                        <h6 class="fw-bold text-dark">Smart Notifications</h6>
+                        <p class="text-muted small mb-0">अन्न खराब होण्यापूर्वी आणि एक्सपायरीची तारीख जवळ आल्यावर वापरकर्त्याला वेळेवर सूचना देणे.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm rounded-4 p-4 h-100 bg-white">
+                        <div class="feature-icon-box">
+                            <i class="fa-solid fa-leaf"></i>
+                        </div>
+                        <h6 class="fw-bold text-dark">Reduce Food Waste</h6>
+                        <p class="text-muted small mb-0">अन्नाची नासाडी कमी करून पैशांची बचत करणे आणि पर्यावरणाचे रक्षण करण्यास मदत करणे.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Section -->
+        <footer class="dashboard-footer text-center text-md-between d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
+            <div>
+                © 2026 <strong>AI Shelf Life Predictor</strong>. All rights reserved.
+            </div>
+            <div>
+                <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3 py-1">System Status: Active</span>
+            </div>
+        </footer>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
