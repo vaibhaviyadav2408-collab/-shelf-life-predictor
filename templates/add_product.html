@@ -3,76 +3,195 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Product - AI Shelf Life</title>
-    <!-- Google Fonts & Font Awesome Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <title>Add Product - AI Shelf Life Predictor</title>
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=4.0">
+    <style>
+        body {
+            background-color: #f8fafc;
+            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+        }
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+        /* Sidebar Styling */
+        .sidebar {
+            width: 250px;
+            height: 100vh;
+            background-color: #ffffff;
+            border-right: 1px solid #e2e8f0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding: 24px 16px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+        }
+        .sidebar-brand {
+            font-weight: 800;
+            font-size: 1.25rem;
+            color: #047857;
+            padding: 0 12px 16px 12px;
+            border-bottom: 1px solid #f1f5f9;
+            margin-bottom: 16px;
+        }
+        .sidebar a {
+            color: #64748b;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 16px;
+            margin-bottom: 4px;
+            border-radius: 10px;
+            font-weight: 500;
+            font-size: 0.92rem;
+            transition: all 0.2s ease;
+        }
+        .sidebar a:hover, .sidebar a.active {
+            background-color: #ecfdf5;
+            color: #047857;
+            font-weight: 600;
+        }
+        /* Layout Alignment */
+        .main-wrapper {
+            margin-left: 250px;
+            width: calc(100% - 250px);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .main-content {
+            padding: 32px;
+            flex: 1;
+        }
+        /* Form Card */
+        .form-card {
+            background: #ffffff;
+            border-radius: 16px;
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+            max-width: 650px;
+        }
+        .form-control, .form-select {
+            border-radius: 10px;
+            padding: 10px 14px;
+            border: 1px solid #cbd5e1;
+            font-size: 0.95rem;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: #10b981;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+        }
+        /* Footer */
+        .dashboard-footer {
+            background-color: #ffffff;
+            border-top: 1px solid #e2e8f0;
+            padding: 16px 32px;
+            margin-top: auto;
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+            .main-wrapper {
+                margin-left: 0;
+                width: 100%;
+            }
+        }
+    </style>
 </head>
 <body>
 
+<div class="dashboard-container">
     <!-- Sidebar Navigation -->
     <div class="sidebar">
         <div class="sidebar-brand">
-            <i class="fa-solid fa-leaf text-success me-2"></i>AI Shelf Life
+            🥦 AI Shelf Life <br>
+            <small class="text-muted fw-normal" style="font-size:0.75rem;">Predictor System</small>
         </div>
-        <a href="{{ url_for('dashboard') }}"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
-        <a href="{{ url_for('add_product') }}" class="active"><i class="fa-solid fa-plus-circle"></i> Add Product</a>
-        <a href="{{ url_for('product_list') }}"><i class="fa-solid fa-boxes-stacked"></i> Product List</a>
+        <a href="{{ url_for('dashboard') }}"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
+        <a href="{{ url_for('add_product') }}" class="active"><i class="fa-solid fa-plus"></i> Add Product</a>
+        <a href="{{ url_for('product_list') }}"><i class="fa-solid fa-list-check"></i> Product List</a>
         <a href="{{ url_for('ai_prediction') }}"><i class="fa-solid fa-robot"></i> AI Prediction</a>
         <a href="{{ url_for('notifications') }}"><i class="fa-solid fa-bell"></i> Notifications</a>
         <a href="{{ url_for('profile') }}"><i class="fa-solid fa-user"></i> Profile</a>
-        <a href="{{ url_for('admin') }}"><i class="fa-solid fa-gear"></i> Admin</a>
+        <hr class="mx-2 my-auto text-muted">
+        <a href="{{ url_for('index') }}" class="text-danger"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
     </div>
 
-    <!-- Main Content Area -->
-    <div class="main-content">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <div>
-                <h3 class="fw-bold mb-1">✨ Add New Product</h3>
-                <p class="text-muted mb-0">Fill in details to track shelf life and freshness.</p>
+    <!-- Main Content Wrapper -->
+    <div class="main-wrapper">
+        <div class="main-content">
+            <div class="d-flex align-items-center justify-content-between mb-4">
+                <div>
+                    <h3 class="fw-bold m-0 text-dark">➕ Add Product</h3>
+                    <small class="text-muted">Enter product details to track expiry status.</small>
+                </div>
+            </div>
+
+            <!-- Form Card Section -->
+            <div class="card form-card p-4">
+                <form action="{{ url_for('add_product') }}" method="POST" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold text-dark">Product Name</label>
+                        <input type="text" name="product_name" class="form-control" placeholder="e.g. Fresh Milk, Bread" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold text-dark">Category</label>
+                        <select name="category" class="form-select" required>
+                            <option value="" disabled selected>Select Category</option>
+                            <option value="Dairy">Dairy</option>
+                            <option value="Bakery">Bakery</option>
+                            <option value="Fruits">Fruits</option>
+                            <option value="Vegetables">Vegetables</option>
+                            <option value="Beverages">Beverages</option>
+                        </select>
+                    </div>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-dark">Manufacturing Date</label>
+                            <input type="date" name="mfg_date" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-dark">Expiry Date</label>
+                            <input type="date" name="exp_date" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold text-dark">Product Image (Optional)</label>
+                        <input type="file" name="product_image" class="form-control" accept="image/*">
+                    </div>
+                    <button type="submit" class="btn btn-success w-100 rounded-3 py-2 fw-bold" style="background-color: #10b981; border: none;">
+                        <i class="fa-solid fa-floppy-disk me-1"></i> Save Product
+                    </button>
+                </form>
             </div>
         </div>
 
-        <div class="card card-custom p-4 p-md-5" style="max-width: 650px;">
-            <form action="{{ url_for('add_product') }}" method="POST" enctype="multipart/form-data">
-                
-                <div class="mb-4">
-                    <label class="form-label fw-semibold"><i class="fa-solid fa-tag text-muted me-2"></i>Product Name</label>
-                    <input type="text" name="product_name" class="form-control form-control-lg fs-6" placeholder="e.g. Organic Fresh Milk 1L" required>
-                </div>
-
-                <div class="mb-4">
-                    <label class="form-label fw-semibold"><i class="fa-solid fa-layer-group text-muted me-2"></i>Category</label>
-                    <select name="category" class="form-select form-select-lg fs-6">
-                        <option value="Dairy">🥛 Dairy</option>
-                        <option value="Bakery">🍞 Bakery</option>
-                        <option value="Fruits">🍎 Fruits</option>
-                        <option value="Vegetables">🥦 Vegetables</option>
-                    </select>
-                </div>
-
-                <div class="row mb-4">
-                    <div class="col-md-6 mb-3 mb-md-0">
-                        <label class="form-label fw-semibold"><i class="fa-solid fa-calendar-day text-muted me-2"></i>Manufacturing Date</label>
-                        <input type="date" name="mfg_date" class="form-control" required>
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label fw-semibold"><i class="fa-solid fa-calendar-xmark text-muted me-2"></i>Expiry Date</label>
-                        <input type="date" name="exp_date" class="form-control" required>
-                    </div>
-                </div>
-
-                <button type="submit" class="btn btn-green w-100 py-3 font-weight-bold fs-6 mt-2 shadow-sm">
-                    <i class="fa-solid fa-floppy-disk me-2"></i>Save Product
-                </button>
-
-            </form>
-        </div>
+        <!-- Footer Section -->
+        <footer class="dashboard-footer text-center text-md-between d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
+            <div>
+                © 2026 <strong>AI Shelf Life Predictor</strong>. All rights reserved.
+            </div>
+            <div>
+                <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3 py-1">System Status: Active</span>
+            </div>
+        </footer>
     </div>
+</div>
 
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
